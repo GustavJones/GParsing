@@ -56,7 +56,7 @@ int Parse::ParseHTTP(const char *buffer, int bufferLen, MessageType msgType) {
     i = httpVersionIndex + 6;
     std::string versionStr;
 
-    while (i < initLineEndIndex && buffer[i] != ' ') {
+    while (i < initLineEndIndex && buffer[i] != ' ' && buffer[i] != '\r') {
       versionStr += buffer[i];
       i++;
     }
@@ -150,7 +150,9 @@ int Parse::ParseHTTP(const char *buffer, int bufferLen, MessageType msgType) {
 
       // Increment and check for break
       headerLineStartIndex = headerLineEndIndex + 1;
-      if (buffer[headerLineEndIndex + 1] == '\n') {
+      if (buffer[headerLineEndIndex + 1] == '\n' ||
+          (buffer[headerLineEndIndex + 1] == '\r' &&
+           buffer[headerLineEndIndex + 2] == '\n')) {
         headerEnd = true;
       }
     }
