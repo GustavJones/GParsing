@@ -163,14 +163,18 @@ int Parse::ParseHTTP(const char *buffer, int bufferLen, MessageType msgType) {
       messageStartIndex = FindString(buffer, bufferLen, "\n\n", i) + 2;
     }
 
-    delete[] m_reqMessage;
     m_reqMessageLen = bufferLen - messageStartIndex;
-    m_reqMessage = new char[m_reqMessageLen]();
 
-    i = messageStartIndex;
-    while (i < bufferLen) {
-      m_reqMessage[i - messageStartIndex] = buffer[i];
-      i++;
+    if (m_reqMessageLen > 0) {
+      delete[] m_reqMessage;
+      m_reqMessage = new char[m_reqMessageLen]();
+
+      i = messageStartIndex;
+      while (i < bufferLen) {
+        m_reqMessage[i - messageStartIndex] = buffer[i];
+        i++;
+      }
+    } else {
     }
   }
   // Response Parsing
@@ -314,14 +318,17 @@ int Parse::ParseHTTP(const char *buffer, int bufferLen, MessageType msgType) {
       messageStartIndex = FindString(buffer, bufferLen, "\n\n", i) + 2;
     }
 
-    delete[] m_respMessage;
     m_respMessageLen = bufferLen - messageStartIndex;
-    m_respMessage = new char[m_respMessageLen]();
 
-    i = messageStartIndex;
-    while (i < bufferLen) {
-      m_respMessage[i - messageStartIndex] = buffer[i];
-      i++;
+    if (m_respMessageLen > 0) {
+      delete[] m_respMessage;
+      m_respMessage = new char[m_respMessageLen]();
+
+      i = messageStartIndex;
+      while (i < bufferLen) {
+        m_respMessage[i - messageStartIndex] = buffer[i];
+        i++;
+      }
     }
   }
 
