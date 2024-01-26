@@ -11,7 +11,7 @@ endif()
 file(GLOB SOURCES "src/HTTP/*.cpp" "include/*.hpp")
 
 set(BUILD_SHARED_LIBS ON)
-set(BUILD_TESTS ON)
+set(BUILD_TESTS OFF)
 
 if(BUILD_SHARED_LIBS)
   add_library(${PROJECT_NAME} SHARED ${SOURCES})

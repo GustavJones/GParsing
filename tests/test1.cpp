@@ -1,5 +1,8 @@
+#include "GParsing/HTTP/Create.hpp"
 #include "GParsing/HTTP/Parse.hpp"
+#include <iostream>
 #include <string>
+#include <utility>
 
 int main(int argc, char *argv[]) {
   std::string buffer = "GET /path/to/file/index.html HTTP/1.0\n";
@@ -16,5 +19,29 @@ int main(int argc, char *argv[]) {
 
   GParsing::HTTP::Parse http;
   http.ParseHTTP(buffer.c_str(), buffer.length());
+
+  std::vector<std::pair<std::string, std::string>> headers;
+  std::pair<std::string, std::string> header1;
+  std::pair<std::string, std::string> header2;
+  header1.first = "header1";
+  header2.first = "header2";
+  header1.second = "value1";
+  header2.second = "value2";
+  headers.push_back(header1);
+  headers.push_back(header2);
+
+  std::string message = "this is the message\nHello World";
+
+  GParsing::HTTP::CreateConfig createConfig;
+  createConfig.CreateRequest(GParsing::HTTP::RequestType::GET, "/", 1.0,
+                             headers, (char *)message.c_str(),
+                             message.length());
+
+  GParsing::HTTP::Create create;
+  char *output;
+  int outputLen;
+  output = create.CreateHTTP(createConfig, outputLen);
+
+  std::cout << output << "\n\n\n";
   return 0;
 }
