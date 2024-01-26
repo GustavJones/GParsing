@@ -134,7 +134,7 @@ int Parse::ParseHTTP(const char *buffer, int bufferLen, MessageType msgType) {
       }
 
       i = headerValue.length() - 1;
-      while (headerValue[i] == ' ') {
+      while (headerValue[i] == ' ' || headerValue[i] == '\r') {
         headerValue.erase(i, 1);
         i--;
       }
@@ -156,7 +156,10 @@ int Parse::ParseHTTP(const char *buffer, int bufferLen, MessageType msgType) {
     }
 
     // ----- Message Parsing --------
-    int messageStartIndex = FindString(buffer, bufferLen, "\n\n", i) + 2;
+    int messageStartIndex = FindString(buffer, bufferLen, "\n\r\n", i) + 3;
+    if (messageStartIndex == -1) {
+      messageStartIndex = FindString(buffer, bufferLen, "\n\n", i) + 2;
+    }
 
     delete[] m_reqMessage;
     m_reqMessageLen = bufferLen - messageStartIndex;
@@ -204,7 +207,7 @@ int Parse::ParseHTTP(const char *buffer, int bufferLen, MessageType msgType) {
       i++;
     }
 
-    while (buffer[i] != '\n') {
+    while (buffer[i] != '\n' && buffer[i] != '\r') {
       m_respCodeMsg += buffer[i];
       i++;
     }
@@ -281,7 +284,7 @@ int Parse::ParseHTTP(const char *buffer, int bufferLen, MessageType msgType) {
       }
 
       i = headerValue.length() - 1;
-      while (headerValue[i] == ' ') {
+      while (headerValue[i] == ' ' || headerValue[i] == '\r') {
         headerValue.erase(i, 1);
         i--;
       }
@@ -304,7 +307,10 @@ int Parse::ParseHTTP(const char *buffer, int bufferLen, MessageType msgType) {
     }
 
     // ----- Message Parsing --------
-    int messageStartIndex = FindString(buffer, bufferLen, "\n\n", i) + 2;
+    int messageStartIndex = FindString(buffer, bufferLen, "\n\r\n", i) + 3;
+    if (messageStartIndex == -1) {
+      messageStartIndex = FindString(buffer, bufferLen, "\n\n", i) + 2;
+    }
 
     delete[] m_respMessage;
     m_respMessageLen = bufferLen - messageStartIndex;

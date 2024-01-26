@@ -46,15 +46,15 @@ char *Create::CreateHTTP(const CreateConfig &createConfig,
       version.erase(3, version.length() - 3);
     }
 
-    output += "HTTP/" + version + '\n';
+    output += "HTTP/" + version + "\r\n";
 
     // Headers
     for (auto headers : m_reqHeaderList) {
-      output += headers.first + ": " + headers.second + '\n';
+      output += headers.first + ": " + headers.second + "\r\n";
     }
 
     // Open line before message
-    output += '\n';
+    output += "\r\n";
 
     // Message
     bufferOutputLen = output.length() + m_reqMessageLen + 1;
@@ -92,15 +92,15 @@ char *Create::CreateHTTP(const CreateConfig &createConfig,
     output += std::to_string(m_respCode) + ' ';
 
     // Status Code Message
-    output += m_respCodeMsg + '\n';
+    output += m_respCodeMsg + "\r\n";
 
     // Headers
     for (auto headers : m_respHeaderList) {
-      output += headers.first + ": " + headers.second + '\n';
+      output += headers.first + ": " + headers.second + "\r\n";
     }
 
     // Open line before message
-    output += '\n';
+    output += "\r\n";
 
     // Message
     bufferOutputLen = output.length() + m_respMessageLen + 1;
