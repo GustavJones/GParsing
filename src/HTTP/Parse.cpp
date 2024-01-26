@@ -8,14 +8,21 @@
 namespace GParsing::HTTP {
 Parse::Parse()
     : m_reqHTTPVersion(-1), m_reqType(RequestType::UNKOWN), m_reqPath(""),
-      m_respHTTPVersion(-1), m_respCode(-1), m_respCodeMsg("") {
+      m_reqMessageLen(-1), m_respHTTPVersion(-1), m_respCode(-1),
+      m_respCodeMsg(""), m_respMessageLen(-1) {
   m_reqMessage = new char[1]();
+  m_reqMessageLen = 1;
   m_respMessage = new char[1]();
+  m_respMessageLen = 1;
 }
 
 Parse::~Parse() {
-  delete[] m_reqMessage;
-  delete[] m_respMessage;
+  if (m_reqMessageLen > 0) {
+    delete[] m_reqMessage;
+  }
+  if (m_respMessageLen > 0) {
+    delete[] m_respMessage;
+  }
 }
 
 int Parse::ParseHTTP(const char *buffer, int bufferLen, MessageType msgType) {
@@ -168,14 +175,12 @@ int Parse::ParseHTTP(const char *buffer, int bufferLen, MessageType msgType) {
     delete[] m_reqMessage;
     if (m_reqMessageLen > 0) {
       m_reqMessage = new char[m_reqMessageLen]();
-    } else {
-      m_reqMessage = new char[1]();
-    }
 
-    i = messageStartIndex;
-    while (i < bufferLen) {
-      m_reqMessage[i - messageStartIndex] = buffer[i];
-      i++;
+      i = messageStartIndex;
+      while (i < bufferLen) {
+        m_reqMessage[i - messageStartIndex] = buffer[i];
+        i++;
+      }
     }
   }
   // Response Parsing
@@ -324,14 +329,12 @@ int Parse::ParseHTTP(const char *buffer, int bufferLen, MessageType msgType) {
     delete[] m_respMessage;
     if (m_respMessageLen > 0) {
       m_respMessage = new char[m_respMessageLen]();
-    } else {
-      m_respMessage = new char[1]();
-    }
 
-    i = messageStartIndex;
-    while (i < bufferLen) {
-      m_respMessage[i - messageStartIndex] = buffer[i];
-      i++;
+      i = messageStartIndex;
+      while (i < bufferLen) {
+        m_respMessage[i - messageStartIndex] = buffer[i];
+        i++;
+      }
     }
   }
 
