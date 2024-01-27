@@ -26,10 +26,10 @@ private:
 
 public:
   Parse();
-  Parse(Parse &&) = default;
-  Parse(const Parse &) = default;
-  Parse &operator=(Parse &&) = default;
-  Parse &operator=(const Parse &) = default;
+  Parse(Parse &&) = delete;
+  Parse(const Parse &) = delete;
+  Parse &operator=(Parse &&) = delete;
+  Parse &operator=(const Parse &) = delete;
   ~Parse();
 
   int ParseHTTP(const char *buffer, int bufferLen,

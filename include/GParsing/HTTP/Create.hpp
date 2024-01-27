@@ -27,10 +27,10 @@ private:
 
 public:
   Create();
-  Create(Create &&) = default;
-  Create(const Create &) = default;
-  Create &operator=(Create &&) = default;
-  Create &operator=(const Create &) = default;
+  Create(Create &&) = delete;
+  Create(const Create &) = delete;
+  Create &operator=(Create &&) = delete;
+  Create &operator=(const Create &) = delete;
   ~Create();
 
   char *CreateHTTP(const CreateConfig &createConfig, int &bufferOutputLen);
