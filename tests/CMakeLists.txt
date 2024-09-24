@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.5)
+project(GParsing-Tests)
+
+message(STATUS "BUILDING TESTS")
+add_subdirectory(test1)
