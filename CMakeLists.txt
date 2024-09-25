@@ -5,9 +5,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
 set(BUILD_TESTS ON)
 
-message(STATUS "-------------------------")
-message(STATUS "BUILDING IN ${CMAKE_BUILD_TYPE} MODE")
-message(STATUS "-------------------------")
+message(STATUS "------------------------------")
+message(STATUS "BUILDING GParsing IN ${CMAKE_BUILD_TYPE} MODE")
+message(STATUS "------------------------------")
 
 add_subdirectory(src)
 
