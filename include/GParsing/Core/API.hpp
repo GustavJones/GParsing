@@ -8,9 +8,8 @@
 #else
 #define GPARSING_API __declspec(dllimport)
 #endif
-#endif
 
-#if defined(__GNUC__)
+#elif defined(__GNUC__)
 #undef GPARSING_API
 
 #ifdef GPARSING_BUILD_DLL
@@ -18,4 +17,7 @@
 #else
 #define GPARSING_API
 #endif
+
+#else
+#define GPARSING_API
 #endif

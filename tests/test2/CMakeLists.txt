@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(GParsing-Tests-test1)
+project(GParsing-Tests-test2)
 
 file(GLOB SOURCES "*.cpp")
 

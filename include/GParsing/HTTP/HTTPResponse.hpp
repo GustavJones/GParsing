@@ -1,27 +1,26 @@
 #pragma once
 #include "GParsing/Core/API.hpp"
-#include "GParsing/HTTP/HTTPMethod.hpp"
 #include <string>
 #include <vector>
 
 namespace GParsing {
-class GPARSING_API HTTPRequest {
+class GPARSING_API HTTPResponse {
 public:
-  HTTPMethod method = GParsing::HTTPMethod::UNKNOWN;
-  std::string uri;
+  int response_code;
+  std::string response_code_message;
   std::string version;
   std::vector<std::pair<std::string, std::vector<std::string>>> headers;
   std::vector<unsigned char> message;
 
-  HTTPRequest();
-  HTTPRequest(HTTPRequest &&) = default;
-  HTTPRequest(const HTTPRequest &) = default;
-  HTTPRequest &operator=(HTTPRequest &&) = default;
-  HTTPRequest &operator=(const HTTPRequest &) = default;
-  ~HTTPRequest();
+  HTTPResponse();
+  HTTPResponse(HTTPResponse &&) = default;
+  HTTPResponse(const HTTPResponse &) = default;
+  HTTPResponse &operator=(HTTPResponse &&) = default;
+  HTTPResponse &operator=(const HTTPResponse &) = default;
+  ~HTTPResponse();
 
-  void ParseRequest(const std::vector<unsigned char> &_request);
-  std::vector<unsigned char> CreateRequest() const;
+  void ParseResponse(const std::vector<unsigned char> &_response);
+  std::vector<unsigned char> CreateResponse() const;
 
 private:
   void _ParseHeaders(const std::string &_headersStr);
@@ -34,4 +33,4 @@ private:
 } // namespace GParsing
 
 GPARSING_API std::ostream &operator<<(std::ostream &os,
-                                      const GParsing::HTTPRequest &obj);
+                                      const GParsing::HTTPResponse &obj);

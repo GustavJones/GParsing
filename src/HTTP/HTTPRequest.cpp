@@ -1,5 +1,4 @@
 #include "GParsing/HTTP/HTTPRequest.hpp"
-#include "GParsing/GParsing.hpp"
 #include "GParsing/HTTP/HTTPMethod.hpp"
 #include "GParsing/HTTP/HTTPRequestException.hpp"
 #include <iostream>
@@ -79,7 +78,7 @@ void HTTPRequest::ParseRequest(const std::vector<unsigned char> &_request) {
     requestMessage.push_back(_request[i]);
   }
 
-  for (int i = 0; i < requestMessageStartIndex - 2; i++) {
+  for (int i = 0; i < requestMessageStartIndex; i++) {
     requestInfo.push_back(_request[i]);
   }
 
@@ -220,7 +219,7 @@ void HTTPRequest::ParseRequest(const std::vector<unsigned char> &_request) {
   }
 
   // Get headers end index
-  headersEndIndex = requestInfo.size();
+  headersEndIndex = requestInfo.size() - 4;
 
   // Parse headers string
   for (int i = headersStartIndex; i < headersEndIndex; i++) {
@@ -233,7 +232,6 @@ void HTTPRequest::ParseRequest(const std::vector<unsigned char> &_request) {
 }
 
 std::vector<unsigned char> HTTPRequest::CreateRequest() const {
-  // TODO
   std::vector<unsigned char> output;
   std::string requestInfo;
   std::string methodStr;
@@ -409,9 +407,9 @@ void HTTPRequest::_ParseHeaders(const std::string &_headersStr) {
 } // namespace GParsing
 
 std::ostream &operator<<(std::ostream &os, const GParsing::HTTPRequest &obj) {
-  std::vector<unsigned char> req = obj.CreateRequest();
+  std::vector<unsigned char> string = obj.CreateRequest();
 
-  for (const auto &c : req) {
+  for (const auto &c : string) {
     os << c;
   }
 

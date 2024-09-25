@@ -1,6 +1,9 @@
 #pragma once
 #include <vector>
 
+#include "GParsing/HTTP/HTTPRequest.hpp"
+#include "GParsing/HTTP/HTTPResponse.hpp"
+
 namespace GParsing {
 inline std::vector<unsigned char> ConvertToCharArray(const char *_c,
                                                      const int &_len) {
