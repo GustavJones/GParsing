@@ -13,4 +13,10 @@ inline std::vector<unsigned char> ConvertToCharArray(const char *_c,
   }
   return output;
 }
+
+inline void ConvertToCharPointer(std::vector<unsigned char> _c, char *_out) {
+  for (int i = 0; i < _c.size(); i++) {
+    _out[i] = _c[i];
+  }
+}
 } // namespace GParsing
