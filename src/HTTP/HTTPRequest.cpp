@@ -381,20 +381,20 @@ void HTTPRequest::_ParseHeaders(const std::string &_headersStr) {
   while (i < _headersStr.length()) {
     headerLineEndIndex = _headersStr.find(LINE_SEPERATOR, i);
 
-    if (headerLineEndIndex < 0) {
+    if (headerLineEndIndex == _headersStr.npos) {
       headerLineEndIndex = _headersStr.length();
-    }
-
-    while (_headersStr[headerLineEndIndex + LINE_SEPERATOR.length()] == ' ' ||
-           _headersStr[headerLineEndIndex + LINE_SEPERATOR.length()] == 9) {
-      headerLineEndIndex = _headersStr.find(
-          LINE_SEPERATOR, headerLineEndIndex + LINE_SEPERATOR.length());
+    } else {
+      while (_headersStr[headerLineEndIndex + LINE_SEPERATOR.length()] == ' ' ||
+             _headersStr[headerLineEndIndex + LINE_SEPERATOR.length()] == 9) {
+        headerLineEndIndex = _headersStr.find(
+            LINE_SEPERATOR, headerLineEndIndex + LINE_SEPERATOR.length());
+      }
     }
 
     headerLine = _headersStr.substr(i, headerLineEndIndex - i);
 
     headerLineSeperatorIndex = headerLine.find(LINE_SEPERATOR);
-    while (!(headerLineSeperatorIndex < 0)) {
+    while (headerLineSeperatorIndex != headerLine.npos) {
       headerLine = headerLine.replace(headerLineSeperatorIndex,
                                       LINE_SEPERATOR.length(), "");
       headerLineSeperatorIndex = headerLine.find(LINE_SEPERATOR);
