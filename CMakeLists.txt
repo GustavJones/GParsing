@@ -3,7 +3,7 @@ project(GParsing)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
-set(BUILD_TESTS ON)
+set(BUILD_TESTS OFF)
 
 message(STATUS "------------------------------")
 message(STATUS "BUILDING GParsing IN ${CMAKE_BUILD_TYPE} MODE")
