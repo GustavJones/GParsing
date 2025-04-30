@@ -7,7 +7,7 @@
 namespace GParsing {
 class GPARSING_API HTTPRequest {
 public:
-  HTTPMethod method = GParsing::HTTPMethod::UNKNOWN;
+  HTTPMethod method = GParsing::HTTPMethod::GPARSING_UNKNOWN;
   std::string uri;
   std::string version;
   std::vector<std::pair<std::string, std::vector<std::string>>> headers;

@@ -4,6 +4,8 @@ project(GParsing)
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
 set(BUILD_TESTS OFF)
+set(BUILD_SHARED_LIBS OFF)
+set(BUILD_STATIC_LIBS ON)
 
 message(STATUS "------------------------------")
 message(STATUS "BUILDING GParsing IN ${CMAKE_BUILD_TYPE} MODE")

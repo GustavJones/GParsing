@@ -127,19 +127,19 @@ void HTTPRequest::ParseRequest(const std::vector<unsigned char> &_request) {
   }
 
   if (methodStr == "GET") {
-    method = GParsing::HTTPMethod::GET;
+    method = GParsing::HTTPMethod::GPARSING_GET;
   } else if (methodStr == "HEAD") {
-    method = GParsing::HTTPMethod::HEAD;
+    method = GParsing::HTTPMethod::GPARSING_HEAD;
   } else if (methodStr == "POST") {
-    method = GParsing::HTTPMethod::POST;
+    method = GParsing::HTTPMethod::GPARSING_POST;
   } else if (methodStr == "PUT") {
-    method = GParsing::HTTPMethod::PUT;
+    method = GParsing::HTTPMethod::GPARSING_PUT;
   } else if (methodStr == "DELETE") {
-    method = GParsing::HTTPMethod::DELETE;
+    method = GParsing::HTTPMethod::GPARSING_DELETE;
   } else if (methodStr == "OPTIONS") {
-    method = GParsing::HTTPMethod::OPTIONS;
+    method = GParsing::HTTPMethod::GPARSING_OPTIONS;
   } else if (methodStr == "TRACE") {
-    method = GParsing::HTTPMethod::TRACE;
+    method = GParsing::HTTPMethod::GPARSING_TRACE;
   }
 
   // Get URI start index
@@ -237,25 +237,25 @@ std::vector<unsigned char> HTTPRequest::CreateRequest() const {
   std::string methodStr;
 
   switch (method) {
-  case GParsing::HTTPMethod::GET:
+  case GParsing::HTTPMethod::GPARSING_GET:
     methodStr = "GET";
     break;
-  case GParsing::HTTPMethod::HEAD:
+  case GParsing::HTTPMethod::GPARSING_HEAD:
     methodStr = "HEAD";
     break;
-  case GParsing::HTTPMethod::POST:
+  case GParsing::HTTPMethod::GPARSING_POST:
     methodStr = "POST";
     break;
-  case GParsing::HTTPMethod::PUT:
+  case GParsing::HTTPMethod::GPARSING_PUT:
     methodStr = "PUT";
     break;
-  case GParsing::HTTPMethod::TRACE:
+  case GParsing::HTTPMethod::GPARSING_TRACE:
     methodStr = "TRACE";
     break;
-  case GParsing::HTTPMethod::DELETE:
+  case GParsing::HTTPMethod::GPARSING_DELETE:
     methodStr = "DELETE";
     break;
-  case GParsing::HTTPMethod::OPTIONS:
+  case GParsing::HTTPMethod::GPARSING_OPTIONS:
     methodStr = "OPTIONS";
     break;
   default:

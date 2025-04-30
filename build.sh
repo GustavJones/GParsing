@@ -1,2 +1,2 @@
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=OFF
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
 cmake --build build -j
