@@ -21,15 +21,15 @@ public:
   ~HTTPRequest();
 
   void ParseRequest(const std::vector<unsigned char> &_request);
+
   std::vector<unsigned char> CreateRequest() const;
 
 private:
   void _ParseHeaders(const std::string &_headersStr);
-  std::pair<std::string, std::vector<std::string>>
-  _ParseHeaderLine(const std::string &_headerLine);
-  std::vector<unsigned char> &
-  ConvertToCRLF(std::vector<unsigned char> &_request, const int &_start = 0,
-                const int &_end = -1);
+
+  std::pair<std::string, std::vector<std::string>> _ParseHeaderLine(const std::string &_headerLine);
+
+  std::vector<unsigned char> & ConvertToCRLF(std::vector<unsigned char> &_request, const int &_start = 0, const int &_end = -1);
 };
 } // namespace GParsing
 
