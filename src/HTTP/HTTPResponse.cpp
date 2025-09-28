@@ -303,14 +303,19 @@ void HTTPResponse::_ParseHeaders(const std::string &_headersStr) {
   while (i < _headersStr.length()) {
     headerLineEndIndex = _headersStr.find(LINE_SEPERATOR, i);
 
-    if (headerLineEndIndex < 0) {
+    if (headerLineEndIndex == _headersStr.npos) {
       headerLineEndIndex = _headersStr.length();
     }
+    else {
+      while (_headersStr[headerLineEndIndex + LINE_SEPERATOR.length()] == ' ' ||
+             _headersStr[headerLineEndIndex + LINE_SEPERATOR.length()] == 9) {
+        headerLineEndIndex = _headersStr.find(
+            LINE_SEPERATOR, headerLineEndIndex + LINE_SEPERATOR.length());
+      }
+    }
 
-    while (_headersStr[headerLineEndIndex + LINE_SEPERATOR.length()] == ' ' ||
-           _headersStr[headerLineEndIndex + LINE_SEPERATOR.length()] == 9) {
-      headerLineEndIndex = _headersStr.find(
-          LINE_SEPERATOR, headerLineEndIndex + LINE_SEPERATOR.length());
+    if (headerLineEndIndex == _headersStr.npos) {
+      headerLineEndIndex = _headersStr.length();
     }
 
     headerLine = _headersStr.substr(i, headerLineEndIndex - i);
