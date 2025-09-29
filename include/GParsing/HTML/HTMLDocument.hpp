@@ -244,7 +244,7 @@ private:
 
             for (const auto& rawTextElement : _rawTextElements)
             {
-              if (CaseUnsensitiveMatch(rawTextElement.c_str(), token.Value(), rawTextElement.length()))
+              if (CaseUnsensitiveMatch((CharT *)rawTextElement.c_str(), token.Value(), rawTextElement.length()))
               {
                 state = States::TextOnly;
               }
@@ -420,7 +420,7 @@ private:
           {
             for (const auto& rawTextElement : _rawTextElements)
             {
-              if (CaseUnsensitiveMatch(rawTextElement.c_str(), tokens[tokenIndex].Value(), rawTextElement.length()))
+              if (CaseUnsensitiveMatch((CharT *)rawTextElement.c_str(), tokens[tokenIndex].Value(), rawTextElement.length()))
               {
                 state = States::TextOnly;
               }
