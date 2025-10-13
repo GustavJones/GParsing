@@ -142,6 +142,11 @@ void HTTPRequest::ParseRequest(const std::vector<unsigned char> &_request) {
     method = GParsing::HTTPMethod::GPARSING_TRACE;
   }
 
+  if (methodEndIndex < 0)
+  {
+    throw GParsing::HTTPRequestException();
+  }
+
   // Get URI start index
   for (int i = methodEndIndex; i < initLineEndIndex; i++) {
     if (requestInfo[i] == ' ' || requestInfo[i] == 9) {
