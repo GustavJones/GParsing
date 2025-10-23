@@ -1,6 +1,6 @@
 #pragma once
 #include "GParsing/HTML/HTMLElement.hpp"
-#include "GParsing/HTML/HTMLDefs.hpp"
+#include "GParsing/Core/Compare.hpp"
 #include <string>
 
 namespace GParsing {

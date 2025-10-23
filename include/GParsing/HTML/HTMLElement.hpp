@@ -1,7 +1,7 @@
 #pragma once
 #include "GParsing/Core/API.hpp"
+#include "GParsing/Core/Compare.hpp"
 #include "GParsing/HTML/HTMLArgument.hpp"
-#include "GParsing/HTML/HTMLDefs.hpp"
 #include <vector>
 #include <string>
 

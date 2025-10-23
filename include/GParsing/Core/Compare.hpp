@@ -1,9 +1,10 @@
 #pragma once
 #include <cstdint>
+#include <vector>
 
 namespace GParsing {
   template <typename CharT>
-  bool CaseSensitivematch(const CharT _char, const CharT _compare) {
+  bool CaseSensitiveMatch(const CharT _char, const CharT _compare) {
     if (_char == _compare) {
       return true;
     }
@@ -47,13 +48,13 @@ namespace GParsing {
   }
 
   template <typename CharT>
-  bool CaseSensitiveMatch(const CharT *const _char, const CharT *const _compare, const size_t _len) {
+  bool CaseSensitiveMatch(const CharT* const _char, const CharT* const _compare, const size_t _len) {
     for (size_t index = 0; index < _len; index++)
     {
       const CharT first = _char[index];
       const CharT second = _compare[index];
 
-      if (!GParsing::CaseSensitivematch<CharT>(first, second))
+      if (!GParsing::CaseSensitiveMatch<CharT>(first, second))
       {
         return false;
       }
@@ -79,11 +80,10 @@ namespace GParsing {
   }
 
   template <typename CharT>
-  bool IsWhitespace(const CharT _char) {
-    const char WHITESPACES[] = { '\u0009', '\u000A', '\u000C', '\u000D', '\u0020' };
-    for (size_t i = 0; i < sizeof(WHITESPACES); i++)
+  bool IsWhitespace(const CharT _char, const std::vector<CharT> &_whitespaces = { '\u0009', '\u000A', '\u000C', '\u000D', '\u0020' }) {
+    for (size_t i = 0; i < _whitespaces.size(); i++)
     {
-      if (GParsing::CaseUnsensitiveMatch<CharT>(_char, WHITESPACES[i]))
+      if (GParsing::CaseUnsensitiveMatch<CharT>(_char, _whitespaces[i]))
       {
         return true;
       }

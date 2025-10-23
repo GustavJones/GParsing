@@ -3,7 +3,7 @@
 #include "GParsing/HTML/HTMLToken.hpp"
 #include "GParsing/HTML/HTMLElement.hpp"
 #include "GParsing/HTML/HTMLDoctype.hpp"
-#include "GParsing/HTML/HTMLDefs.hpp"
+#include "GParsing/Core/Compare.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
