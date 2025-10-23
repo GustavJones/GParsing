@@ -19,7 +19,7 @@ private:
   HTMLDoctype m_doctypeToken;
   HTMLElement<CharT> * m_rootElement;
 
-  enum States {
+  enum class States {
     TextOnly,
     Text,
     Tag,
@@ -551,6 +551,7 @@ private:
       }
     }
 
+    delete m_rootElement;
     m_rootElement = new HTMLElement<CharT>();
     m_rootElement->ParseFromTokens(_tokens, rootTokenIndex);
   }
@@ -680,11 +681,12 @@ private:
 public:
   HTMLDocument() noexcept : m_rootElement(nullptr) {};
 
-  HTMLDocument(HTMLDocument&& _doc) noexcept : m_rootElement(_doc.m_rootElement) {
+  HTMLDocument(HTMLDocument&& _doc) noexcept : m_rootElement(_doc.m_rootElement), m_doctypeToken(_doc.m_doctypeToken) {
     _doc.m_rootElement = nullptr;
+    _doc.m_doctypeToken = HTMLDoctype();
   }
 
-  HTMLDocument(const HTMLDocument& _doc) noexcept {
+  HTMLDocument(const HTMLDocument& _doc) noexcept : m_doctypeToken(_doc.m_doctypeToken) {
     if (_doc.m_rootElement)
     {
       m_rootElement = new HTMLElement<CharT>(*_doc.m_rootElement);
@@ -696,13 +698,29 @@ public:
   }
 
   HTMLDocument& operator=(HTMLDocument&& _doc) noexcept {
+    if (this == &_doc)
+    {
+      return *this;
+    }
+
+    delete m_rootElement;
     m_rootElement = _doc.m_rootElement;
     _doc.m_rootElement = nullptr;
+
+    m_doctypeToken = _doc.m_doctypeToken;
+    _doc.m_doctypeToken = HTMLDoctype();
 
     return *this;
   }
 
   HTMLDocument& operator=(const HTMLDocument& _doc) noexcept {
+    if (this == &_doc)
+    {
+      return *this;
+    }
+
+    delete m_rootElement;
+
     if (_doc.m_rootElement)
     {
       m_rootElement = new HTMLElement<CharT>(*_doc.m_rootElement);
@@ -712,14 +730,13 @@ public:
       m_rootElement = nullptr;
     }
 
+    m_doctypeToken = _doc.m_doctypeToken;
+
     return *this;
   }
 
   ~HTMLDocument() noexcept {
-    if (m_rootElement)
-    {
-      delete m_rootElement;
-    }
+    delete m_rootElement;
   }
 
   void Parse(const CharT *const _buffer, const size_t _bufferLen, const std::vector<std::string> &_voidElements = GParsing::HTML_VOID_ELEMENTS, const std::vector<std::string>& _rawTextElements = GParsing::HTML_RAW_TEXT_PARSE_ELEMENTS) {
