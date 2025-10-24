@@ -16,67 +16,121 @@ private:
   std::vector<HTMLElement<CharT> *> m_children;
 
 public:
-  HTMLElement() noexcept : m_autoClosing(false) {}
+  HTMLElement() noexcept : m_autoClosing(false), m_name(0), m_value(0), m_arguments(0), m_children(0) {}
 
-  HTMLElement(const HTMLElement& _element) noexcept {
-    HTMLElement<CharT>& thisRef = *this;
+  HTMLElement(const HTMLElement& _element) noexcept : m_autoClosing(_element.m_autoClosing), m_name(_element.m_name), m_value(_element.m_value), m_arguments(_element.m_arguments.size()), m_children(_element.m_children.size()) {
+    for (size_t i = 0; i < m_arguments.size(); i++)
+    {
+      m_arguments[i] = _element.m_arguments[i] ? new HTMLArgument<CharT>(*_element.m_arguments[i]) : nullptr;
+    }
 
-    thisRef = _element;
+    for (size_t i = 0; i < m_children.size(); i++)
+    {
+      m_children[i] = _element.m_children[i] ? new HTMLElement<CharT>(*_element.m_children[i]) : nullptr;
+    }
   }
 
-  HTMLElement(HTMLElement&& _element) noexcept {
-    HTMLElement<CharT>& thisRef = *this;
+  HTMLElement(HTMLElement&& _element) noexcept : m_autoClosing(_element.m_autoClosing), m_name(_element.m_name), m_value(_element.m_value), m_arguments(_element.m_arguments.size()), m_children(_element.m_children.size()) {
+    for (size_t i = 0; i < m_arguments.size(); i++)
+    {
+      m_arguments[i] = _element.m_arguments[i];
+    }
 
-    thisRef = _element;
+    for (size_t i = 0; i < m_children.size(); i++)
+    {
+      m_children[i] = _element.m_children[i];
+    }
+
+    _element.m_arguments.clear();
+    _element.m_children.clear();
+
+    _element = HTMLElement<CharT>();
   }
 
   HTMLElement& operator=(const HTMLElement& _element) noexcept {
-    m_children.resize(_element.m_children.size());
-
-    for (size_t index = 0; index < _element.m_children.size(); index++)
+    if (&_element == this)
     {
-      m_children[index] = new HTMLElement<CharT>(*_element.m_children[index]);
+      return *this;
+    }
+
+    m_autoClosing = _element.m_autoClosing;
+    m_name = _element.m_name;
+    m_value = _element.m_value;
+
+    for (size_t i = 0; i < m_arguments.size(); i++)
+    {
+      delete m_arguments[i];
+    }
+
+    for (size_t i = 0; i < m_children.size(); i++)
+    {
+      delete m_children[i];
     }
 
     m_arguments.resize(_element.m_arguments.size());
+    m_children.resize(_element.m_children.size());
 
-    for (size_t index = 0; index < _element.m_arguments.size(); index++)
+    for (size_t i = 0; i < m_arguments.size(); i++)
     {
-      m_arguments[index] = new HTMLArgument<CharT>(*_element.m_arguments[index]);
+      m_arguments[i] = _element.m_arguments[i] ? new HTMLArgument<CharT>(*_element.m_arguments[i]) : nullptr;
+    }
+
+    for (size_t i = 0; i < m_children.size(); i++)
+    {
+      m_children[i] = _element.m_children[i] ? new HTMLElement<CharT>(*_element.m_children[i]) : nullptr;
     }
 
     return *this;
   }
 
   HTMLElement& operator=(HTMLElement&& _element) noexcept {
-    m_children.resize(_element.m_children.size());
-
-    for (size_t index = 0; index < _element.m_children.size(); index++)
+    if (&_element == this)
     {
-      m_children[index] = _element.m_children[index];
+      return *this;
     }
 
-    _element.m_children.clear();
+    m_autoClosing = _element.m_autoClosing;
+    m_name = _element.m_name;
+    m_value = _element.m_value;
+
+    for (size_t i = 0; i < m_arguments.size(); i++)
+    {
+      delete m_arguments[i];
+    }
+
+    for (size_t i = 0; i < m_children.size(); i++)
+    {
+      delete m_children[i];
+    }
 
     m_arguments.resize(_element.m_arguments.size());
+    m_children.resize(_element.m_children.size());
 
-    for (size_t index = 0; index < _element.m_arguments.size(); index++)
+    for (size_t i = 0; i < m_arguments.size(); i++)
     {
-      m_arguments[index] = _element.m_arguments[index];
+      m_arguments[i] = _element.m_arguments[i];
+    }
+
+    for (size_t i = 0; i < m_children.size(); i++)
+    {
+      m_children[i] = _element.m_children[i];
     }
 
     _element.m_arguments.clear();
+    _element.m_children.clear();
+
+    _element = HTMLElement<CharT>();
 
     return *this;
   }
 
   ~HTMLElement() noexcept {
-    for (auto element : m_children)
+    for (auto *element : m_children)
     {
       delete element;
     }
 
-    for (auto element : m_arguments)
+    for (auto *element : m_arguments)
     {
       delete element;
     }

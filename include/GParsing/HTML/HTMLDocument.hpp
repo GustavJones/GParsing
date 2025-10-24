@@ -686,16 +686,7 @@ public:
     _doc.m_doctypeToken = HTMLDoctype();
   }
 
-  HTMLDocument(const HTMLDocument& _doc) noexcept : m_doctypeToken(_doc.m_doctypeToken) {
-    if (_doc.m_rootElement)
-    {
-      m_rootElement = new HTMLElement<CharT>(*_doc.m_rootElement);
-    }
-    else
-    {
-      m_rootElement = nullptr;
-    }
-  }
+  HTMLDocument(const HTMLDocument& _doc) noexcept : m_doctypeToken(_doc.m_doctypeToken), m_rootElement(_doc.m_rootElement ? new HTMLElement<CharT>(*_doc.m_rootElement) : nullptr) {  }
 
   HTMLDocument& operator=(HTMLDocument&& _doc) noexcept {
     if (this == &_doc)
@@ -720,15 +711,7 @@ public:
     }
 
     delete m_rootElement;
-
-    if (_doc.m_rootElement)
-    {
-      m_rootElement = new HTMLElement<CharT>(*_doc.m_rootElement);
-    }
-    else
-    {
-      m_rootElement = nullptr;
-    }
+    m_rootElement = _doc.m_rootElement ? new HTMLElement<CharT>(*_doc.m_rootElement) : nullptr;
 
     m_doctypeToken = _doc.m_doctypeToken;
 
