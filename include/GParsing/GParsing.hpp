@@ -3,6 +3,7 @@
 
 #include "GParsing/HTTP/GParsing-HTTP.hpp"
 #include "GParsing/HTML/GParsing-HTML.hpp"
+#include "GParsing/JSON/GParsing-JSON.hpp"
 
 namespace GParsing {
 inline std::vector<unsigned char> ConvertToCharArray(const char *_c, const int &_len) {
