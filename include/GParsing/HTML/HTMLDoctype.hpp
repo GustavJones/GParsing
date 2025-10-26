@@ -4,7 +4,7 @@
 #include <string>
 
 namespace GParsing {
-	struct HTMLDoctype
+	class GPARSING_API HTMLDoctype
 	{
 	private:
 		enum class State

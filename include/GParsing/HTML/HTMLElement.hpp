@@ -6,7 +6,8 @@
 #include <string>
 
 namespace GParsing {
-template <typename CharT> GPARSING_API class HTMLElement
+template <typename CharT>
+GPARSING_API class HTMLElement
 {
 private:
   bool m_autoClosing;

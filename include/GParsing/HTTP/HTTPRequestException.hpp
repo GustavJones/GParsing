@@ -1,8 +1,9 @@
 #pragma once
 #include <exception>
+#include "GParsing/Core/API.hpp"
 
 namespace GParsing {
-class HTTPRequestException : public std::exception {
+GPARSING_API class HTTPRequestException : public std::exception {
 public:
   HTTPRequestException();
   HTTPRequestException(HTTPRequestException &&) = default;

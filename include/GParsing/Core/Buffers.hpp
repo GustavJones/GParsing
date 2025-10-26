@@ -1,4 +1,5 @@
 #pragma once
+#include "GParsing/Core/API.hpp"
 #include "GParsing/Core/Compare.hpp"
 
 namespace GParsing {
@@ -10,7 +11,7 @@ namespace GParsing {
   };
 
   template <typename CharT>
-  void RemoveCharacterPadding(std::vector<CharT>& _buffer, const std::vector<CharT>& _characters, BufferLocation _location = BufferLocation::BOTH) {
+  GPARSING_API void RemoveCharacterPadding(std::vector<CharT>& _buffer, const std::vector<CharT>& _characters, BufferLocation _location = BufferLocation::BOTH) {
     if (_buffer.size() == 0)
     {
       return;
@@ -117,7 +118,7 @@ namespace GParsing {
   }
 
   template <typename CharT>
-  std::vector<CharT> RemoveCharacterPadding(const CharT *const _buffer, const size_t _bufferLen, const std::vector<CharT>& _characters, BufferLocation _location = BufferLocation::BOTH) {
+  GPARSING_API std::vector<CharT> RemoveCharacterPadding(const CharT *const _buffer, const size_t _bufferLen, const std::vector<CharT>& _characters, BufferLocation _location = BufferLocation::BOTH) {
     std::vector<CharT> buffer;
     buffer.resize(_bufferLen);
 

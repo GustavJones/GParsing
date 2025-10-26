@@ -7,11 +7,11 @@
 
 namespace GParsing {
 
-enum class HTMLTokenFlags {
+GPARSING_API enum class HTMLTokenFlags {
   StartTagAutoClosing,
 };
 
-enum class HTMLTokenType {
+GPARSING_API enum class HTMLTokenType {
   UNKNOWN,
   DOCTYPE,
   StartTag,
@@ -22,7 +22,8 @@ enum class HTMLTokenType {
   AttributeValue
 };
 
-template <typename CharT> GPARSING_API class HTMLToken {
+template <typename CharT> 
+GPARSING_API class HTMLToken {
 private:
   std::vector<HTMLTokenFlags> m_flags;
   HTMLTokenType m_type;

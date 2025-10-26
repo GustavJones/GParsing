@@ -14,7 +14,8 @@ namespace GParsing {
 const std::vector<std::string> HTML_VOID_ELEMENTS = { "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr" };
 const std::vector<std::string> HTML_RAW_TEXT_PARSE_ELEMENTS = {"script", "style", "title", "textarea"};
 
-template <typename CharT> GPARSING_API class HTMLDocument {
+template <typename CharT>
+GPARSING_API class HTMLDocument {
 private:
   HTMLDoctype m_doctypeToken;
   HTMLElement<CharT> * m_rootElement;

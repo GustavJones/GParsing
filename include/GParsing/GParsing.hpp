@@ -6,7 +6,7 @@
 #include "GParsing/JSON/GParsing-JSON.hpp"
 
 namespace GParsing {
-inline std::vector<unsigned char> ConvertToCharArray(const char *_c, const int &_len) {
+inline GPARSING_API std::vector<unsigned char> ConvertToCharArray(const char *_c, const int &_len) {
   std::vector<unsigned char> output;
   output.reserve(_len);
 
@@ -16,7 +16,7 @@ inline std::vector<unsigned char> ConvertToCharArray(const char *_c, const int &
   return output;
 }
 
-inline const unsigned char *const ConvertToCharPointer(const std::vector<unsigned char> &_c) {
+inline GPARSING_API const unsigned char *const ConvertToCharPointer(const std::vector<unsigned char> &_c) {
   return _c.data();
 }
 } // namespace GParsing
