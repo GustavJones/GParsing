@@ -1,6 +1,7 @@
 #pragma once
 #include "GParsing/Core/API.hpp"
 #include "GParsing/Core/Compare.hpp"
+#include <stdexcept>
 
 namespace GParsing {
   enum class BufferLocation : uint8_t
@@ -8,6 +9,12 @@ namespace GParsing {
     BEGINNING = 0b01,
     END = 0b10,
     BOTH = 0b100
+  };
+
+  enum class Endianness : uint8_t
+  {
+    BIG,
+    LITTLE
   };
 
   template <typename CharT>
@@ -129,5 +136,87 @@ namespace GParsing {
 
     RemoveCharacterPadding(buffer, _characters, _location);
     return buffer;
+  }
+
+  template <typename CharT, typename BytesT>
+  GPARSING_API BytesT BytesFromBuffer(const std::vector<CharT>& _buffer, const size_t _index, const Endianness _endianness = Endianness::BIG) {
+    const size_t bytesTSize = sizeof(BytesT) * 8;
+    const size_t charTSize = sizeof(CharT) * 8;
+    BytesT output = 0;
+
+    if (bytesTSize % charTSize != 0)
+    {
+      throw std::runtime_error("Incompatable sizes");
+    }
+
+    size_t readAmount = bytesTSize / charTSize;
+
+    if (readAmount > _buffer.size())
+    {
+      throw std::runtime_error("Not enough memory in buffer");
+    }
+
+    if (_endianness == Endianness::BIG)
+    {
+      for (size_t i = 0; i < readAmount; i++)
+      {
+        BytesT unshifted = static_cast<BytesT>(_buffer[_index + i]);
+        size_t shiftAmount = bytesTSize - ((i + 1) * charTSize);
+        output |= unshifted << shiftAmount;
+      }
+    }
+    else if (_endianness == Endianness::LITTLE)
+    {
+      for (size_t i = 0; i < readAmount; i++)
+      {
+        BytesT unshifted = static_cast<BytesT>(_buffer[_index + i]);
+        size_t shiftAmount = i * charTSize;
+        output |= unshifted << shiftAmount;
+      }
+    }
+    else
+    {
+      throw std::runtime_error("Unknown endianness");
+    }
+
+    return output;
+  }
+
+  template <typename CharT, typename BytesT>
+  GPARSING_API std::vector<CharT> BufferFromBytes(const BytesT& _bytes, const Endianness _endianness = Endianness::BIG) {
+    const size_t bytesTSize = sizeof(BytesT) * 8;
+    const size_t charTSize = sizeof(CharT) * 8;
+    std::vector<CharT> output;
+
+    if (bytesTSize % charTSize != 0)
+    {
+      throw std::runtime_error("Incompatable sizes");
+    }
+
+    size_t writeAmount = bytesTSize / charTSize;
+    output.resize(writeAmount);
+
+    if (_endianness == Endianness::BIG)
+    {
+      for (size_t i = 0; i < writeAmount; i++)
+      {
+        size_t shiftAmount = bytesTSize - ((i + 1) * charTSize);
+        output[i] = _bytes >> shiftAmount;
+      }
+    }
+    else if (_endianness == Endianness::LITTLE)
+    {
+      for (size_t i = 0; i < writeAmount; i++)
+      {
+        size_t shiftAmount = i * charTSize;
+        output[i] = _bytes >> shiftAmount;
+      }
+    }
+    else
+    {
+      throw std::runtime_error("Unknown endianness");
+    }
+
+    return output;
   }
 }

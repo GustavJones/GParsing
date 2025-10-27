@@ -4,6 +4,7 @@
 #include "GParsing/HTTP/GParsing-HTTP.hpp"
 #include "GParsing/HTML/GParsing-HTML.hpp"
 #include "GParsing/JSON/GParsing-JSON.hpp"
+#include "GParsing/EXIF/GParsing-EXIF.hpp"
 
 namespace GParsing {
 inline GPARSING_API std::vector<unsigned char> ConvertToCharArray(const char *_c, const int &_len) {
