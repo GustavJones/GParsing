@@ -9,6 +9,9 @@ namespace GParsing {
 	GPARSING_API class JSONNumber : public JSONElement<CharT>
 	{
 	public:
+		JSONNumber() : m_number(0) {}
+		JSONNumber(const double_t _number) : m_number(_number) {}
+
 		double_t GetNumber() const { return m_number; }
 		void SetNumber(double_t _num) { m_number = _num; }
 

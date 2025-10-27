@@ -10,6 +10,10 @@ namespace GParsing {
 	GPARSING_API class JSONArray : public JSONElement<CharT>
 	{
 	public:
+		JSONArray() = default;
+
+		JSONArray(const std::vector<JSONValue<CharT>> &_array) : m_values(_array) {}
+
 		JSONArray* Copy() const override {
 			return new JSONArray(*this);
 		}
@@ -266,6 +270,23 @@ namespace GParsing {
 
 		JSONValue<CharT>& GetValue(const size_t _index) {
 			return m_values[_index];
+		}
+
+		void PushValue(const JSONValue<CharT>& _value) {
+			m_values.push_back(_value);
+		}
+
+		void PopValue()
+		{
+			m_values.pop_back();
+		}
+
+		void RemoveValue(const size_t _index) {
+			m_values.erase(m_values.begin() + _index);
+		}
+
+		void Clear() {
+			m_values.clear();
 		}
 
 	private:

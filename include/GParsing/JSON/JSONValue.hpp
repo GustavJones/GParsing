@@ -18,6 +18,24 @@ namespace GParsing {
 	{
 	public:
 		JSONValue() : m_type(Type::UNKNOWN), m_element(nullptr) {};
+		JSONValue(JSONElement<CharT>* const _value) : m_type(Type::UNKNOWN), m_element(nullptr) {
+			SetValue(_value);
+		}
+		JSONValue(const JSONString<CharT> &_value) : m_type(Type::UNKNOWN), m_element(nullptr) {
+			SetString(_value);
+		}
+		JSONValue(const JSONNumber<CharT> &_value) : m_type(Type::UNKNOWN), m_element(nullptr) {
+			SetNumber(_value);
+		}
+		JSONValue(const JSONObject<CharT> &_value) : m_type(Type::UNKNOWN), m_element(nullptr) {
+			SetObject(_value);
+		}
+		JSONValue(const JSONArray<CharT> &_value) : m_type(Type::UNKNOWN), m_element(nullptr) {
+			SetArray(_value);
+		}
+		JSONValue(const JSONExpression<CharT> &_value) : m_type(Type::UNKNOWN), m_element(nullptr) {
+			SetExpression(_value);
+		}
 
 		JSONValue(const JSONValue& _val) : m_type(_val.m_type), m_element(_val.m_element ? _val.m_element->Copy() : nullptr) {};
 		JSONValue(JSONValue&& _val) : m_type(_val.m_type), m_element(_val.m_element) {
@@ -122,13 +140,13 @@ namespace GParsing {
 		bool Serialize(std::vector<CharT>& _buffer) {
 			switch (m_type)
 			{
-			case GParsing::JSONValue<char>::Type::UNKNOWN:
+			case GParsing::JSONValue<CharT>::Type::UNKNOWN:
 			{
 				_buffer.clear();
 				return false;
 				break;
 			}
-			case GParsing::JSONValue<char>::Type::STRING:
+			case GParsing::JSONValue<CharT>::Type::STRING:
 			{
 				auto *element = dynamic_cast<JSONString<CharT> *>(m_element);
 
@@ -148,7 +166,7 @@ namespace GParsing {
 
 				break;
 			}
-			case GParsing::JSONValue<char>::Type::NUMBER:
+			case GParsing::JSONValue<CharT>::Type::NUMBER:
 			{
 				auto* element = dynamic_cast<JSONNumber<CharT> *>(m_element);
 
@@ -168,7 +186,7 @@ namespace GParsing {
 
 				break;
 			}
-			case GParsing::JSONValue<char>::Type::OBJECT:
+			case GParsing::JSONValue<CharT>::Type::OBJECT:
 			{
 				auto* element = dynamic_cast<JSONObject<CharT> *>(m_element);
 
@@ -188,7 +206,7 @@ namespace GParsing {
 
 				break;
 			}
-			case GParsing::JSONValue<char>::Type::ARRAY:
+			case GParsing::JSONValue<CharT>::Type::ARRAY:
 			{
 				auto* element = dynamic_cast<JSONArray<CharT> *>(m_element);
 
@@ -208,7 +226,7 @@ namespace GParsing {
 
 				break;
 			}
-			case GParsing::JSONValue<char>::Type::EXPRESSION:
+			case GParsing::JSONValue<CharT>::Type::EXPRESSION:
 			{
 				auto* element = dynamic_cast<JSONExpression<CharT> *>(m_element);
 
@@ -332,6 +350,80 @@ namespace GParsing {
 				_exp = *expression;
 				return true;
 			}
+		}
+
+		void SetValue(JSONElement<CharT>* const _value) {
+			JSONString<CharT>* string = dynamic_cast<JSONString<CharT>*>(_value);
+			JSONNumber<CharT>* number = dynamic_cast<JSONNumber<CharT>*>(_value);
+			JSONObject<CharT>* object = dynamic_cast<JSONObject<CharT>*>(_value);
+			JSONArray<CharT>* array = dynamic_cast<JSONArray<CharT>*>(_value);
+			JSONExpression<CharT>* expression = dynamic_cast<JSONExpression<CharT>*>(_value);
+
+			if (string)
+			{
+				m_type = Type::STRING;
+			}
+			else if (number)
+			{
+				m_type = Type::NUMBER;
+			}
+			else if (object)
+			{
+				m_type = Type::OBJECT;
+			}
+			else if (array)
+			{
+				m_type = Type::ARRAY;
+			}
+			else if (expression)
+			{
+				m_type = Type::EXPRESSION;
+			}
+			else
+			{
+				m_type = Type::UNKNOWN;
+			}
+
+			delete m_element;
+			m_element = _value;
+		}
+
+		void SetString(const JSONString<CharT>& _value) {
+			SetValue(new JSONString<CharT>(_value));
+		}
+
+		void SetString(const std::vector<CharT>& _str) {
+			JSONString<CharT>* string = new JSONString<CharT>();
+			string->SetString(_str);
+			SetValue(string);
+		}
+
+		void SetString(const std::string & _str) {
+			JSONString<CharT>* string = new JSONString<CharT>();
+			string->SetString(_str);
+			SetValue(string);
+		}
+
+		void SetNumber(const JSONNumber<CharT> &_value) {
+			SetValue(new JSONNumber<CharT>(_value));
+		}
+
+		void SetNumber(const double_t& _value) {
+			JSONNumber<CharT>* number = new JSONNumber<CharT>();
+			number->SetNumber(_value);
+			SetValue(number);
+		}
+
+		void SetObject(const JSONObject<CharT>& _value) {
+			SetValue(new JSONObject<CharT>(_value));
+		}
+
+		void SetArray(const JSONArray<CharT>& _value) {
+			SetValue(new JSONArray<CharT>(_value));
+		}
+
+		void SetExpression(const JSONExpression<CharT>& _value) {
+			SetValue(new JSONExpression<CharT>(_value));
 		}
 
 	private:

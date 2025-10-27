@@ -5,12 +5,27 @@
 #include "GParsing/JSON/JSONValue.hpp"
 #include <vector>
 #include <utility>
+#include <stdexcept>
 
 namespace GParsing {
   template <typename CharT>
 	GPARSING_API class JSONObject : public JSONElement<CharT>
 	{
 	public:
+		JSONObject() = default;
+		JSONObject(const std::vector<JSONString<CharT>>& _keys, const std::vector<JSONValue<CharT>>& _values) {
+			if (_keys.size() != _values.size())
+			{
+				throw std::runtime_error("Buffers not the same size");
+			}
+
+			m_members.reserve(_keys.size());
+			for (size_t i = 0; i < _keys.size(); i++)
+			{
+				m_members.push_back({_keys[i], _values[i]});
+			}
+		}
+
 		JSONObject* Copy() const override {
 			return new JSONObject(*this);
 		}
@@ -255,6 +270,14 @@ namespace GParsing {
 			_buffer.push_back('}');
 
 			return true;
+		}
+
+		void AddMember(const JSONString<CharT>& _key, const JSONValue<CharT>& _value) {
+			m_members.push_back({ _key, _value });
+		}
+
+		void RemoveMember(const size_t _index) {
+			m_members.erase(m_members.begin() + _index);
 		}
 
 	private:

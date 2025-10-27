@@ -6,8 +6,14 @@ namespace GParsing {
 	GPARSING_API class JSONString : public JSONElement<CharT>
 	{
 	public:
+		JSONString() = default;
+		JSONString(const std::vector<CharT>& _string) : m_string(_string) {}
+		JSONString(const std::string &_string) : m_string(_string.begin(), _string.end()) {}
+
 		const std::vector<CharT> &GetString() const { return m_string; }
 		void SetString(const std::vector<CharT>&_string) { m_string = _string; }
+
+		void SetString(const std::string& _string) { m_string = std::vector<CharT>(_string.begin(), _string.end()); }
 
 		bool Parse(const CharT* const _buffer, const size_t _bufferLen) override {
 			State state = State::NORMAL;

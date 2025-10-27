@@ -20,6 +20,7 @@ namespace GParsing {
 	GPARSING_API class JSONExpression : public JSONElement<CharT>
 	{
 	public:
+		JSONExpression(const JSONExpressionType _type) : m_type(_type) {}
 		JSONExpression() : m_type(JSONExpressionType::Unknown) {};
 		JSONExpression(const JSONExpression<CharT>& _exp) = default;
 		JSONExpression(JSONExpression<CharT>&& _exp) = default;
@@ -49,7 +50,7 @@ namespace GParsing {
 					continue;
 				}
 
-				if (!CaseUnsensitiveMatch(JSONExpressionDefinitions[i].first.c_str(), expression.data(), expression.size()))
+				if (!CaseUnsensitiveMatch<CharT>(reinterpret_cast<const CharT *>(JSONExpressionDefinitions[i].first.c_str()), expression.data(), expression.size()))
 				{
 					continue;
 				}
@@ -89,6 +90,15 @@ namespace GParsing {
 
 		JSONExpression* Copy() const override {
 			return new JSONExpression(*this);
+		}
+
+		JSONExpressionType GetExpression() const
+		{
+			return m_type;
+		}
+
+		void SetExpression(const JSONExpressionType _expression) {
+			m_type = _expression;
 		}
 	private:
 
