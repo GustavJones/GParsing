@@ -254,7 +254,7 @@ namespace GParsing {
 		const JSONElement<CharT>* const GetValue() const { return m_element; }
 		JSONElement<CharT>* const GetValue() { return m_element; }
 
-		bool GetString(std::vector<CharT> &_str) {
+		bool GetString(std::vector<CharT> &_str) const {
 			if (m_type != Type::STRING)
 			{
 				_str.clear();
@@ -268,7 +268,7 @@ namespace GParsing {
 			}
 		}
 
-		bool GetString(JSONString<CharT> &_str) {
+		bool GetString(JSONString<CharT> &_str) const {
 			if (m_type != Type::STRING)
 			{
 				_str = JSONString<CharT>();
@@ -282,7 +282,17 @@ namespace GParsing {
 			}
 		}
 
-		bool GetNumber(double_t& _num) {
+		std::string GetString() const {
+			std::vector<CharT> buffer;
+			if (!GetString(buffer))
+			{
+				throw std::runtime_error("Cannot cast to string");
+			}
+
+			return std::string(buffer.begin(), buffer.end());
+		}
+
+		bool GetNumber(double_t& _num) const {
 			if (m_type != Type::NUMBER)
 			{
 				_num = 0;
@@ -296,7 +306,7 @@ namespace GParsing {
 			}
 		}
 
-		bool GetNumber(JSONNumber<CharT>& _num) {
+		bool GetNumber(JSONNumber<CharT>& _num) const {
 			if (m_type != Type::NUMBER)
 			{
 				_num = JSONNumber<CharT>();
@@ -310,7 +320,17 @@ namespace GParsing {
 			}
 		}
 
-		bool GetObject(JSONObject<CharT>& _obj) {
+		double_t GetNumber() const {
+			double_t out = 0;
+			if (!GetNumber(out))
+			{
+				throw std::runtime_error("Cannot cast to number");
+			}
+
+			return out;
+		}
+
+		bool GetObject(JSONObject<CharT>& _obj) const {
 			if (m_type != Type::OBJECT)
 			{
 				_obj = JSONObject<CharT>();
@@ -324,7 +344,31 @@ namespace GParsing {
 			}
 		}
 
-		bool GetArray(JSONArray<CharT>& _arr) {
+		JSONObject<CharT>& GetObject() {
+			if (m_type != Type::OBJECT)
+			{
+				throw std::runtime_error("Cannot cast to object");
+			}
+			else
+			{
+				auto* object = dynamic_cast<JSONObject<CharT> *>(m_element);
+				return *object;
+			}
+		}
+
+		const JSONObject<CharT>& GetObject() const {
+			if (m_type != Type::OBJECT)
+			{
+				throw std::runtime_error("Cannot cast to object");
+			}
+			else
+			{
+				auto* object = dynamic_cast<JSONObject<CharT> *>(m_element);
+				return *object;
+			}
+		}
+
+		bool GetArray(JSONArray<CharT>& _arr) const {
 			if (m_type != Type::ARRAY)
 			{
 				_arr = JSONArray<CharT>();
@@ -338,7 +382,31 @@ namespace GParsing {
 			}
 		}
 
-		bool GetExpression(JSONExpression<CharT> &_exp) {
+		JSONArray<CharT>& GetArray() {
+			if (m_type != Type::ARRAY)
+			{
+				throw std::runtime_error("Cannot cast to array");
+			}
+			else
+			{
+				auto* array = dynamic_cast<JSONArray<CharT> *>(m_element);
+				return *array;
+			}
+		}
+
+		const JSONArray<CharT>& GetArray() const {
+			if (m_type != Type::ARRAY)
+			{
+				throw std::runtime_error("Cannot cast to array");
+			}
+			else
+			{
+				auto* array = dynamic_cast<JSONArray<CharT> *>(m_element);
+				return *array;
+			}
+		}
+
+		bool GetExpression(JSONExpression<CharT> &_exp) const {
 			if (m_type != Type::EXPRESSION)
 			{
 				_exp = JSONExpression<CharT>();
@@ -349,6 +417,61 @@ namespace GParsing {
 				auto* expression = dynamic_cast<JSONExpression<CharT> *>(m_element);
 				_exp = *expression;
 				return true;
+			}
+		}
+
+		bool GetBoolean(bool &_bool) const {
+			if (m_type != Type::EXPRESSION)
+			{
+				_bool = false;
+				return false;
+			}
+			else
+			{
+				auto* expression = dynamic_cast<JSONExpression<CharT> *>(m_element);
+				
+				switch (expression->GetExpression())
+				{
+				case GParsing::JSONExpressionType::True:
+					_bool = true;
+					return true;
+				case GParsing::JSONExpressionType::False:
+					_bool = false;
+					return true;
+				default:
+					return false;
+					break;
+				}
+			}
+		}
+
+		bool GetBoolean() const {
+			bool out = false;
+			if (!GetBoolean(out))
+			{
+				throw std::runtime_error("Cannot cast to boolean");
+			}
+
+			return out;
+		}
+
+		bool IsNull() const {
+			if (m_type != Type::EXPRESSION)
+			{
+				return false;
+			}
+			else
+			{
+				auto* expression = dynamic_cast<JSONExpression<CharT> *>(m_element);
+
+				switch (expression->GetExpression())
+				{
+				case GParsing::JSONExpressionType::Null:
+					return true;
+				default:
+					return false;
+					break;
+				}
 			}
 		}
 

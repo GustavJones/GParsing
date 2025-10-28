@@ -29,5 +29,19 @@ namespace GParsing {
 				tags.push_back(_tag);
 			}
 		}
+
+		std::vector<GParsing::EXIFTag<ByteT>> GetTags(const GParsing::EXIFTagNumber& _tagID) const {
+			std::vector<GParsing::EXIFTag<ByteT>> output;
+
+			for (const auto& tag : tags)
+			{
+				if (tag.GetID() == _tagID)
+				{
+					output.push_back(tag);
+				}
+			}
+
+			return output;
+		}
 	};
 }

@@ -4,6 +4,7 @@
 #include "GParsing/EXIF/EXIFDefinitions.hpp"
 #include "GParsing/EXIF/EXIFDataType.hpp"
 #include "GParsing/EXIF/EXIFTag.hpp"
+#include "GParsing/Core/Buffers.hpp"
 #include <vector>
 #include <iostream>
 #include <stdexcept>
@@ -172,7 +173,7 @@ namespace GParsing {
 							tag.AppendComponent(component);
 						}
 
-						AppendTag(tag);
+						this->AppendTag(tag);
 						tag.ClearComponents();
 					}
 					else
@@ -189,7 +190,7 @@ namespace GParsing {
 							tag.AppendComponent(component);
 						}
 
-						AppendTag(tag);
+						this->AppendTag(tag);
 						tag.ClearComponents();
 					}
 				}
@@ -224,7 +225,7 @@ namespace GParsing {
 							tag.AppendComponent(component);
 						}
 
-						AppendTag(tag);
+						this->AppendTag(tag);
 						tag.ClearComponents();
 					}
 					else
@@ -243,7 +244,7 @@ namespace GParsing {
 							tag.AppendComponent(component);
 						}
 
-						AppendTag(tag);
+						this->AppendTag(tag);
 						tag.ClearComponents();
 					}
 				}
@@ -258,6 +259,8 @@ namespace GParsing {
 
 	public:
 		bool Parse(const std::vector<unsigned char>& _imageBuffer) override {
+			this->tags.clear();
+
 			std::vector<unsigned char> exifBuffer;
 
 			if (_imageBuffer.size() == 0)
@@ -275,7 +278,7 @@ namespace GParsing {
 				return false;
 			}
 
-			if (!CaseSensitiveMatch(exifBuffer.data(), reinterpret_cast<unsigned char *>("Exif\0\0"), 6))
+			if (!CaseSensitiveMatch(exifBuffer.data(), reinterpret_cast<const unsigned char *>("Exif\0\0"), 6))
 			{
 				return false;
 			}
@@ -285,17 +288,17 @@ namespace GParsing {
 			uint32_t IFDOffset;
 			uint16_t IFDEntryCount;
 
-			const bool littleEndian = CaseSensitiveMatch(exifBuffer.data(), reinterpret_cast<unsigned char*>("II"), 2);
-			const bool bigEndian = CaseSensitiveMatch(exifBuffer.data(), reinterpret_cast<unsigned char*>("MM"), 2);
+			const bool littleEndian = CaseSensitiveMatch(exifBuffer.data(), reinterpret_cast<const unsigned char*>("II"), 2);
+			const bool bigEndian = CaseSensitiveMatch(exifBuffer.data(), reinterpret_cast<const unsigned char*>("MM"), 2);
 
 			if (littleEndian)
 			{
-				if (!CaseSensitiveMatch(exifBuffer.data() + 2, reinterpret_cast<unsigned char*>("\x2A\x00"), 2))
+				if (!CaseSensitiveMatch(exifBuffer.data() + 2, reinterpret_cast<const unsigned char *>("\x2A\x00"), 2))
 				{
 					return false;
 				}
 
-				IFDOffset = BytesFromBuffer<unsigned char, uint16_t>(exifBuffer, 4, Endianness::LITTLE);
+				IFDOffset = BytesFromBuffer<unsigned char, uint16_t>(exifBuffer, 4, GParsing::Endianness::LITTLE);
 
 				while (IFDOffset > 0)
 				{
@@ -307,13 +310,13 @@ namespace GParsing {
 					}
 				}
 
-				for (size_t i = 0; i < tags.size(); i++)
+				for (size_t i = 0; i < this->tags.size(); i++)
 				{
-					if (tags[i].GetID() == EXIFTagNumber::EXIFOffset_MainImage)
+					if (this->tags[i].GetID() == EXIFTagNumber::EXIFOffset_MainImage)
 					{
-						if (tags[i].GetComponentsCount() == 1)
+						if (this->tags[i].GetComponentsCount() == 1)
 						{
-							IFDOffset = BytesFromBuffer<ByteT, uint32_t>(tags[i].GetComponentFromIndex(0), 0, Endianness::BIG);
+							IFDOffset = BytesFromBuffer<ByteT, uint32_t>(this->tags[i].GetComponentFromIndex(0), 0, Endianness::BIG);
 							break;
 						}
 					}
@@ -331,7 +334,7 @@ namespace GParsing {
 			}
 			else if (bigEndian)
 			{
-				if (!CaseSensitiveMatch(exifBuffer.data() + 2, reinterpret_cast<unsigned char*>("\x00\x2A"), 2))
+				if (!CaseSensitiveMatch(exifBuffer.data() + 2, reinterpret_cast<const unsigned char*>("\x00\x2A"), 2))
 				{
 					return false;
 				}
@@ -348,13 +351,13 @@ namespace GParsing {
 					}
 				}
 
-				for (size_t i = 0; i < tags.size(); i++)
+				for (size_t i = 0; i < this->tags.size(); i++)
 				{
-					if (tags[i].GetID() == EXIFTagNumber::EXIFOffset_MainImage)
+					if (this->tags[i].GetID() == EXIFTagNumber::EXIFOffset_MainImage)
 					{
-						if (tags[i].GetComponentsCount() == 1)
+						if (this->tags[i].GetComponentsCount() == 1)
 						{
-							IFDOffset = BytesFromBuffer<ByteT, uint32_t>(tags[i].GetComponentFromIndex(0), 0, Endianness::BIG);
+							IFDOffset = BytesFromBuffer<ByteT, uint32_t>(this->tags[i].GetComponentFromIndex(0), 0, Endianness::BIG);
 							break;
 						}
 					}

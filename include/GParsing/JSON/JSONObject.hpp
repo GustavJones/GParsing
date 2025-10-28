@@ -6,6 +6,7 @@
 #include <vector>
 #include <utility>
 #include <stdexcept>
+#include <fstream>
 
 namespace GParsing {
   template <typename CharT>
@@ -232,6 +233,26 @@ namespace GParsing {
 			return Parse(_buffer.data(), _buffer.size());
 		}
 
+		bool Parse(const std::string &_filePath) {
+			std::fstream f;
+			std::vector<CharT> buffer;
+
+			f.open(_filePath, std::fstream::in | std::fstream::ate);
+			if (f.is_open())
+			{
+				buffer.resize(f.tellg());
+				f.seekg(f.beg);
+				f.read(reinterpret_cast<char *>(buffer.data()), buffer.size());
+				f.close();
+				return Parse(buffer);
+			}
+			else
+			{
+				f.close();
+				return false;
+			}
+		}
+
 		bool Serialize(std::vector<CharT>& _buffer) override {
 			std::vector<CharT> tempBuffer;
 
@@ -272,12 +293,73 @@ namespace GParsing {
 			return true;
 		}
 
+		bool Serialize(const std::string& _filePath) {
+			std::fstream f;
+			std::vector<CharT> buffer;
+
+			if (!Serialize(buffer))
+			{
+				return false;
+			}
+
+			f.open(_filePath, std::fstream::out);
+			if (f.is_open())
+			{
+				f.write(reinterpret_cast<char *>(buffer.data()), buffer.size());
+				f.close();
+				return true;
+			}
+			else
+			{
+				f.close();
+				return false;
+			}
+		}
+
 		void AddMember(const JSONString<CharT>& _key, const JSONValue<CharT>& _value) {
 			m_members.push_back({ _key, _value });
 		}
 
 		void RemoveMember(const size_t _index) {
 			m_members.erase(m_members.begin() + _index);
+		}
+
+		const size_t GetMembersCount() const {
+			return m_members.size();
+		}
+
+		void GetMember(JSONString<CharT>& _key, JSONValue<CharT>& _value, const size_t _index) const {
+			_key = m_members[_index].first;
+			_value = m_members[_index].second;
+		}
+
+		void SetMember(const JSONString<CharT>& _key, const JSONValue<CharT>& _value, const size_t _index) {
+			m_members[_index].first = _key;
+			m_members[_index].second = _value;
+		}
+
+		JSONValue<CharT>& operator[](const JSONString<CharT> &_key) {
+			for (auto& member : m_members)
+			{
+				if (member.first == _key)
+				{
+					return member.second;
+				}
+			}
+
+			throw std::runtime_error("Key not in object");
+		}
+
+		const JSONValue<CharT>& operator[](const JSONString<CharT> &_key) const {
+			for (auto& member : m_members)
+			{
+				if (member.first == _key)
+				{
+					return member.second;
+				}
+			}
+
+			throw std::runtime_error("Key not in object");
 		}
 
 	private:

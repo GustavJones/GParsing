@@ -1,6 +1,7 @@
 #pragma once
 #include "GParsing/Core/API.hpp"
 #include <unordered_map>
+#include <cstdint>
 
 namespace GParsing {
 	GPARSING_API enum class EXIFDataType : uint16_t

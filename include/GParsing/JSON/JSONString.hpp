@@ -11,6 +11,7 @@ namespace GParsing {
 		JSONString(const std::string &_string) : m_string(_string.begin(), _string.end()) {}
 
 		const std::vector<CharT> &GetString() const { return m_string; }
+		std::vector<CharT> &GetString() { return m_string; }
 		void SetString(const std::vector<CharT>&_string) { m_string = _string; }
 
 		void SetString(const std::string& _string) { m_string = std::vector<CharT>(_string.begin(), _string.end()); }
@@ -83,49 +84,49 @@ namespace GParsing {
 					{
 					case '\\':
 					{
-						state = State::NORMAL;
+						state = State::TEXT;
 						m_string.push_back('\\');
 						break;
 					}
 					case '\"':
 					{
-						state = State::NORMAL;
+						state = State::TEXT;
 						m_string.push_back('\"');
 						break;
 					}
 					case '/':
 					{
-						state = State::NORMAL;
+						state = State::TEXT;
 						m_string.push_back('/');
 						break;
 					}
 					case 'b':
 					{
-						state = State::NORMAL;
+						state = State::TEXT;
 						m_string.push_back('\b');
 						break;
 					}
 					case 'f':
 					{
-						state = State::NORMAL;
+						state = State::TEXT;
 						m_string.push_back('\f');
 						break;
 					}
 					case 'n':
 					{
-						state = State::NORMAL;
+						state = State::TEXT;
 						m_string.push_back('\n');
 						break;
 					}
 					case 'r':
 					{
-						state = State::NORMAL;
+						state = State::TEXT;
 						m_string.push_back('\r');
 						break;
 					}
 					case 't':
 					{
-						state = State::NORMAL;
+						state = State::TEXT;
 						m_string.push_back('\t');
 						break;
 					}
@@ -187,6 +188,44 @@ namespace GParsing {
 		bool Serialize(std::vector<CharT>& _buffer) override {
 			_buffer = m_string;
 
+			for (int64_t index = _buffer.size() - 1; index >= 0; index--)
+			{
+				switch (_buffer[index])
+				{
+				case '\"':
+					_buffer.insert(_buffer.begin() + index, '\\');
+					break;
+				case '\\':
+					_buffer.insert(_buffer.begin() + index, '\\');
+					break;
+				case '/':
+					_buffer.insert(_buffer.begin() + index, '\\');
+					break;
+				case '\b':
+					_buffer[index] = 'b';
+					_buffer.insert(_buffer.begin() + index, '\\');
+					break;
+				case '\f':
+					_buffer[index] = 'f';
+					_buffer.insert(_buffer.begin() + index, '\\');
+					break;
+				case '\n':
+					_buffer[index] = 'n';
+					_buffer.insert(_buffer.begin() + index, '\\');
+					break;
+				case '\r':
+					_buffer[index] = 'r';
+					_buffer.insert(_buffer.begin() + index, '\\');
+					break;
+				case '\t':
+					_buffer[index] = 't';
+					_buffer.insert(_buffer.begin() + index, '\\');
+					break;
+				default:
+					break;
+				}
+			}
+
 			_buffer.insert(_buffer.begin(), '\"');
 			_buffer.insert(_buffer.end(), '\"');
 			return true;
@@ -202,6 +241,23 @@ namespace GParsing {
 
 		JSONString* Copy() const override {
 			return new JSONString(*this);
+		}
+
+		bool operator==(const JSONString<CharT> &_str) const {
+			if (_str.m_string.size() != m_string.size())
+			{
+				return false;
+			}
+
+			for (size_t i = 0; i < m_string.size(); i++)
+			{
+				if (_str.m_string[i] != m_string[i])
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 	private:

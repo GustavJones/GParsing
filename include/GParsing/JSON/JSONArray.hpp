@@ -55,6 +55,11 @@ namespace GParsing {
 				buffer.erase(buffer.end() - 1, buffer.end());
 			}
 
+			if (buffer.size() == 0)
+			{
+				return true;
+			}
+
 			while (index < buffer.size())
 			{
 				switch (state)
@@ -262,6 +267,10 @@ namespace GParsing {
 
 		JSONValue<CharT>& operator[](const size_t _index) {
 			return GetValue(_index);
+		}
+
+		const size_t GetSize() const {
+			return m_values.size();
 		}
 
 		const JSONValue<CharT>& GetValue(const size_t _index) const {
