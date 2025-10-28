@@ -4,14 +4,15 @@
 #include <vector>
 
 namespace GParsing {
+	template<typename ByteT>
 	class GPARSING_API EXIFImageBase
 	{
 	public:
+		std::vector<GParsing::EXIFTag<ByteT>> tags;
+
 		virtual bool Parse(const std::vector<unsigned char>& _imageBuffer) = 0;
 
-		std::vector<GParsing::EXIFTag<uint8_t>> tags;
-
-		void AppendTag(const GParsing::EXIFTag<uint8_t>& _tag) {
+		void AppendTag(const GParsing::EXIFTag<ByteT>& _tag) {
 			bool duplicate = false;
 
 			for (size_t i = 0; i < tags.size(); i++)

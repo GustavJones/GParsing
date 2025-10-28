@@ -9,7 +9,8 @@
 #include <stdexcept>
 
 namespace GParsing {
-	class GPARSING_API EXIFImageJPEG : public EXIFImageBase
+	template <typename ByteT>
+	class GPARSING_API EXIFImageJPEG : public EXIFImageBase<ByteT>
 	{
 	private:
 		bool _IsMarkerValid(const uint16_t _marker) {
@@ -136,8 +137,8 @@ namespace GParsing {
 			uint32_t componentsCount;
 			std::vector<unsigned char> data;
 
-			std::vector<uint8_t> component;
-			EXIFTag<uint8_t> tag;
+			std::vector<ByteT> component;
+			EXIFTag<ByteT> tag;
 
 			_ifdEndOffset = BytesFromBuffer<unsigned char, uint32_t>(_exifBuffer, _ifdStartOffset + (_ifdEntryCount * ENTRY_SIZE) + 2, _endianness);
 
@@ -312,7 +313,7 @@ namespace GParsing {
 					{
 						if (tags[i].GetComponentsCount() == 1)
 						{
-							IFDOffset = BytesFromBuffer<unsigned char, uint32_t>(tags[i].GetComponentFromIndex(0), 0, Endianness::BIG);
+							IFDOffset = BytesFromBuffer<ByteT, uint32_t>(tags[i].GetComponentFromIndex(0), 0, Endianness::BIG);
 							break;
 						}
 					}
@@ -353,7 +354,7 @@ namespace GParsing {
 					{
 						if (tags[i].GetComponentsCount() == 1)
 						{
-							IFDOffset = BytesFromBuffer<unsigned char, uint32_t>(tags[i].GetComponentFromIndex(0), 0, Endianness::BIG);
+							IFDOffset = BytesFromBuffer<ByteT, uint32_t>(tags[i].GetComponentFromIndex(0), 0, Endianness::BIG);
 							break;
 						}
 					}

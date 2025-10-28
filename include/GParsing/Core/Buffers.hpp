@@ -143,13 +143,21 @@ namespace GParsing {
     const size_t bytesTSize = sizeof(BytesT) * 8;
     const size_t charTSize = sizeof(CharT) * 8;
     BytesT output = 0;
+    size_t readAmount = 0;
 
-    if (bytesTSize % charTSize != 0)
+    if (bytesTSize > charTSize)
     {
-      throw std::runtime_error("Incompatable sizes");
-    }
+      if (bytesTSize % charTSize != 0)
+      {
+        throw std::runtime_error("Incompatable sizes");
+      }
 
-    size_t readAmount = bytesTSize / charTSize;
+      readAmount = bytesTSize / charTSize;
+    }
+    else
+    {
+      readAmount = 1;
+    }
 
     if (readAmount > _buffer.size())
     {
@@ -161,7 +169,8 @@ namespace GParsing {
       for (size_t i = 0; i < readAmount; i++)
       {
         BytesT unshifted = static_cast<BytesT>(_buffer[_index + i]);
-        size_t shiftAmount = bytesTSize - ((i + 1) * charTSize);
+        size_t shiftAmount = ((i + 1) * charTSize <= bytesTSize) ? bytesTSize - ((i + 1) * charTSize) : 0;
+
         output |= unshifted << shiftAmount;
       }
     }
@@ -187,20 +196,29 @@ namespace GParsing {
     const size_t bytesTSize = sizeof(BytesT) * 8;
     const size_t charTSize = sizeof(CharT) * 8;
     std::vector<CharT> output;
+    size_t writeAmount = 0;
 
-    if (bytesTSize % charTSize != 0)
+    if (bytesTSize > charTSize)
     {
-      throw std::runtime_error("Incompatable sizes");
+      if (bytesTSize % charTSize != 0)
+      {
+        throw std::runtime_error("Incompatable sizes");
+      }
+
+      writeAmount = bytesTSize / charTSize;
+    }
+    else
+    {
+      writeAmount = 1;
     }
 
-    size_t writeAmount = bytesTSize / charTSize;
     output.resize(writeAmount);
 
     if (_endianness == Endianness::BIG)
     {
       for (size_t i = 0; i < writeAmount; i++)
       {
-        size_t shiftAmount = bytesTSize - ((i + 1) * charTSize);
+        size_t shiftAmount = ((i + 1) * charTSize <= bytesTSize) ? bytesTSize - ((i + 1) * charTSize) : 0;
         output[i] = _bytes >> shiftAmount;
       }
     }
