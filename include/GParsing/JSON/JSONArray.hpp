@@ -108,6 +108,31 @@ namespace GParsing {
 					{
 					case ',':
 					{
+            if (arrayScopeCount > 0 || objectScopeCount > 0) {
+              valueBuffer.push_back(buffer[index]);
+
+              if (index == buffer.size() - 1)
+              {
+                GParsing::RemoveCharacterPadding(valueBuffer, {
+                  static_cast<CharT>(JSONWhitespace::SPACE),
+                  static_cast<CharT>(JSONWhitespace::LINEFEED),
+                  static_cast<CharT>(JSONWhitespace::HORIZONTAL_TAB),
+                  static_cast<CharT>(JSONWhitespace::CARRIAGE_RETURN),
+                  });
+
+                m_values.emplace_back();
+                if (!m_values[m_values.size() - 1].Parse(valueBuffer))
+                {
+                  m_values.clear();
+                  return false;
+                }
+
+                return true;
+              }
+
+              break;
+            }
+
 						state = State::NORMAL;
 
 						GParsing::RemoveCharacterPadding(valueBuffer, {
