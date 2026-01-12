@@ -1,5 +1,7 @@
 #pragma once
 #include "GParsing/JSON/JSONElement.hpp"
+#include <string>
+#include <vector>
 
 namespace GParsing {
 	template <typename CharT>
@@ -9,6 +11,10 @@ namespace GParsing {
 		JSONString() = default;
 		JSONString(const std::vector<CharT>& _string) : m_string(_string) {}
 		JSONString(const std::string &_string) : m_string(_string.begin(), _string.end()) {}
+		JSONString(const char *_string) {
+      const std::string str = _string;
+      m_string = std::vector<CharT>(str.begin(), str.end());
+    }
 
 		const std::vector<CharT> &GetString() const { return m_string; }
 		std::vector<CharT> &GetString() { return m_string; }
