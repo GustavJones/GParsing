@@ -34,6 +34,7 @@ namespace GParsing {
 		bool Parse(const CharT* const _buffer, const size_t _bufferLen) override {
 			size_t objectScopeCount = 0;
 			size_t arrayScopeCount = 0;
+      bool inStringScope = false;
 			State state;
 			m_members.clear();
 
@@ -73,11 +74,12 @@ namespace GParsing {
 
 			while (index < buffer.size())
 			{
+        auto &c = buffer[index];
 				switch (state)
 				{
 				case State::NORMAL:
 				{
-					switch (buffer[index])
+					switch (c)
 					{
 					case static_cast<CharT>(JSONWhitespace::SPACE):
 					{
@@ -97,7 +99,7 @@ namespace GParsing {
 					}
 					default:
 						state = State::KEY;
-						tempBuffer.push_back(buffer[index]);
+						tempBuffer.push_back(c);
 						break;
 					}
 
@@ -105,7 +107,7 @@ namespace GParsing {
 				}
 				case State::KEY:
 				{
-					switch (buffer[index])
+					switch (c)
 					{
 					case ':':
 					{
@@ -121,7 +123,7 @@ namespace GParsing {
 						break;
 					}
 					default:
-						tempBuffer.push_back(buffer[index]);
+						tempBuffer.push_back(c);
 						break;
 					}
 
@@ -129,13 +131,13 @@ namespace GParsing {
 				}
 				case State::VALUE:
 				{
-					switch (buffer[index])
+					switch (c)
 					{
 					case ',':
 					{
-						if (objectScopeCount > 0 || arrayScopeCount > 0)
+						if (objectScopeCount > 0 || arrayScopeCount > 0 || inStringScope)
 						{
-							tempBuffer.push_back(buffer[index]);
+							tempBuffer.push_back(c);
 							break;
 						}
 
@@ -153,16 +155,65 @@ namespace GParsing {
 
 						break;
 					}
+          case '\"':
+          {
+            if (inStringScope) {
+              inStringScope = false;
+              tempBuffer.push_back(c);
+
+              if (index == buffer.size() - 1)
+              {
+                if (objectScopeCount > 0 || arrayScopeCount > 0)
+                {
+                  m_members.clear();
+                  return false;
+                  break;
+                }
+
+                if (!member.second.Parse(tempBuffer))
+                {
+                  m_members.clear();
+                  return false;
+                }
+                tempBuffer.clear();
+
+                m_members.push_back(member);
+              }
+            } else {
+              inStringScope = true;
+              tempBuffer.push_back(c);
+
+              if (index == buffer.size() - 1)
+              {
+                if (objectScopeCount > 0 || arrayScopeCount > 0)
+                {
+                  m_members.clear();
+                  return false;
+                  break;
+                }
+
+                if (!member.second.Parse(tempBuffer))
+                {
+                  m_members.clear();
+                  return false;
+                }
+                tempBuffer.clear();
+
+                m_members.push_back(member);
+              }
+            }
+            break;
+          }
 					case '{':
 					{
 						objectScopeCount++;
-						tempBuffer.push_back(buffer[index]);
+						tempBuffer.push_back(c);
 						break;
 					}
 					case '[':
 					{
 						arrayScopeCount++;
-						tempBuffer.push_back(buffer[index]);
+						tempBuffer.push_back(c);
 						break;
 					}
 					case '}':
@@ -170,7 +221,7 @@ namespace GParsing {
 						if (objectScopeCount > 0)
 						{
 							objectScopeCount--;
-							tempBuffer.push_back(buffer[index]);
+							tempBuffer.push_back(c);
 						}
 						else
 						{
@@ -185,7 +236,7 @@ namespace GParsing {
 						if (arrayScopeCount > 0)
 						{
 							arrayScopeCount--;
-							tempBuffer.push_back(buffer[index]);
+							tempBuffer.push_back(c);
 						}
 						else
 						{
@@ -196,7 +247,7 @@ namespace GParsing {
 						break;
 					}
 					default:
-						tempBuffer.push_back(buffer[index]);
+						tempBuffer.push_back(c);
 
 						if (index == buffer.size() - 1)
 						{
