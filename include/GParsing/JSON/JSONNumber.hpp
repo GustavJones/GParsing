@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "GParsing/JSON/JSONElement.hpp"
+#include "GParsing/Core/Strings.hpp"
 
 namespace GParsing {
 	template <typename CharT> 
@@ -86,7 +87,7 @@ namespace GParsing {
 			std::string numberString;
 			try
 			{
-				numberString = std::to_string(GetNumber());
+				numberString = GParsing::to_string(GetNumber());
 			}
 			catch (const std::exception&)
 			{
