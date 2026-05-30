@@ -1,5 +1,6 @@
 #pragma once
 #include "GParsing/Core/API.hpp"
+#include "GParsing/JSON/JSONWhitespace.hpp"
 #include "GParsing/JSON/JSONString.hpp"
 #include "GParsing/JSON/JSONNumber.hpp"
 #include "GParsing/JSON/JSONExpression.hpp"

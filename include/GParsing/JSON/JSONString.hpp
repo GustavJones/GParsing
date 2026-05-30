@@ -1,4 +1,5 @@
 #pragma once
+#include "GParsing/JSON/JSONWhitespace.hpp"
 #include "GParsing/JSON/JSONElement.hpp"
 #include <string>
 #include <vector>

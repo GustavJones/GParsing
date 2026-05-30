@@ -1,6 +1,7 @@
 #pragma once
 #include "GParsing/Core/API.hpp"
 #include "GParsing/Core/Buffers.hpp"
+#include "GParsing/JSON/JSONWhitespace.hpp"
 #include "GParsing/JSON/JSONElement.hpp"
 #include "GParsing/JSON/JSONValue.hpp"
 #include <vector>
