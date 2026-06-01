@@ -30,7 +30,7 @@ private:
   std::vector<CharT> m_value;
 
 public:
-  HTMLToken<CharT>() : m_type(HTMLTokenType::UNKNOWN), m_value(0), m_flags(0) {}
+  HTMLToken() : m_type(HTMLTokenType::UNKNOWN), m_value(0), m_flags(0) {}
 
   bool AddFlag(const HTMLTokenFlags& _flag) {
     for (const auto& flag : m_flags)

@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 
   GParsing::BytesFromBuffer<unsigned char, uint16_t>(buffer, 0);
 
-  GParsing::EXIFImageJPEG image;
+  GParsing::EXIFImageJPEG<uint8_t> image;
   std::cout << image.Parse(buffer) << std::endl;
 
   std::cin.get();

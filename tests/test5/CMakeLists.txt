@@ -4,6 +4,6 @@ project(GParsing-Tests-test5)
 file(GLOB SOURCES "*.cpp")
 
 add_executable(${PROJECT_NAME} ${SOURCES})
-target_include_directories(${PROJECT_NAME} PRIVATE ../../include/)
+target_link_libraries(${PROJECT_NAME} PRIVATE GParsing)
 
 file(COPY test5.JPG DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
