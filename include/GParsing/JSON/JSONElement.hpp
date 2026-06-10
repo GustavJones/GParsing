@@ -1,5 +1,7 @@
 #pragma once
 #include "GParsing/Core/API.hpp"
+#include <vector>
+#include <cstddef>
 
 namespace GParsing {
   template <typename CharT>
