@@ -1,5 +1,4 @@
 #pragma once
-#include "GParsing/Core/API.hpp"
 #include "GParsing/EXIF/EXIFImageBase.hpp"
 #include "GParsing/EXIF/EXIFDefinitions.hpp"
 #include "GParsing/EXIF/EXIFDataType.hpp"
@@ -11,7 +10,7 @@
 
 namespace GParsing {
 	template <typename ByteT>
-	class GPARSING_API EXIFImageJPEG : public EXIFImageBase<ByteT>
+	class EXIFImageJPEG : public EXIFImageBase<ByteT>
 	{
 	private:
 		bool _IsMarkerValid(const uint16_t _marker) {

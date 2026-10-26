@@ -1,11 +1,10 @@
 #pragma once
-#include "GParsing/Core/API.hpp"
 #include <vector>
 #include <cstddef>
 
 namespace GParsing {
   template <typename CharT>
-	GPARSING_API class JSONElement
+	class JSONElement
 	{
 	public:
 		virtual ~JSONElement() = default;

@@ -6,7 +6,7 @@
 
 namespace GParsing {
 	template <typename CharT>
-	GPARSING_API class JSONString : public JSONElement<CharT>
+	class JSONString : public JSONElement<CharT>
 	{
 	public:
 		JSONString() = default;

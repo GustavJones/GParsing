@@ -1,10 +1,9 @@
 #pragma once
-#include "GParsing/Core/API.hpp"
 #include <unordered_map>
 #include <cstdint>
 
 namespace GParsing {
-	GPARSING_API enum class EXIFDataType : uint16_t
+	enum class EXIFDataType : uint16_t
 	{
 		UNKNOWN = 0x00,
 		UBYTE = 0x01,

@@ -2,7 +2,7 @@
 
 namespace GParsing {
 	template <typename CharT>
-	class GPARSING_API HTMLArgument
+	class HTMLArgument
 	{
 	private:
 		std::vector<CharT> m_key;

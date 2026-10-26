@@ -1,5 +1,4 @@
 #pragma once
-#include "GParsing/Core/API.hpp"
 #include "GParsing/EXIF/EXIFDataType.hpp"
 #include <vector>
 #include <cstdint>
@@ -314,7 +313,7 @@ namespace GParsing {
 	};
 
 	template <typename ByteT>
-	GPARSING_API class EXIFTag
+	class EXIFTag
 	{
 	private:
 		EXIFTagNumber m_id;

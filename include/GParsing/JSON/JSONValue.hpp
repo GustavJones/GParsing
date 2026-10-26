@@ -1,5 +1,4 @@
 #pragma once
-#include "GParsing/Core/API.hpp"
 #include "GParsing/JSON/JSONWhitespace.hpp"
 #include "GParsing/JSON/JSONString.hpp"
 #include "GParsing/JSON/JSONNumber.hpp"
@@ -15,7 +14,7 @@ namespace GParsing {
 	class JSONObject;
 
   template <typename CharT>
-	GPARSING_API class JSONValue
+	class JSONValue
 	{
 	public:
 		JSONValue() : m_type(Type::UNKNOWN), m_element(nullptr) {};

@@ -1,5 +1,4 @@
 #pragma once
-#include "GParsing/Core/API.hpp"
 #include "GParsing/Core/Compare.hpp"
 #include <stdexcept>
 
@@ -18,7 +17,7 @@ namespace GParsing {
   };
 
   template <typename CharT>
-  GPARSING_API void RemoveCharacterPadding(std::vector<CharT>& _buffer, const std::vector<CharT>& _characters, BufferLocation _location = BufferLocation::BOTH) {
+  void RemoveCharacterPadding(std::vector<CharT>& _buffer, const std::vector<CharT>& _characters, BufferLocation _location = BufferLocation::BOTH) {
     if (_buffer.size() == 0)
     {
       return;
@@ -125,7 +124,7 @@ namespace GParsing {
   }
 
   template <typename CharT>
-  GPARSING_API std::vector<CharT> RemoveCharacterPadding(const CharT *const _buffer, const size_t _bufferLen, const std::vector<CharT>& _characters, BufferLocation _location = BufferLocation::BOTH) {
+  std::vector<CharT> RemoveCharacterPadding(const CharT *const _buffer, const size_t _bufferLen, const std::vector<CharT>& _characters, BufferLocation _location = BufferLocation::BOTH) {
     std::vector<CharT> buffer;
     buffer.resize(_bufferLen);
 
@@ -139,7 +138,7 @@ namespace GParsing {
   }
 
   template <typename CharT, typename BytesT>
-  GPARSING_API BytesT BytesFromBuffer(const std::vector<CharT>& _buffer, const size_t _index, const Endianness _endianness = Endianness::BIG) {
+  BytesT BytesFromBuffer(const std::vector<CharT>& _buffer, const size_t _index, const Endianness _endianness = Endianness::BIG) {
     const size_t bytesTSize = sizeof(BytesT) * 8;
     const size_t charTSize = sizeof(CharT) * 8;
     BytesT output = 0;
@@ -192,7 +191,7 @@ namespace GParsing {
   }
 
   template <typename CharT, typename BytesT>
-  GPARSING_API std::vector<CharT> BufferFromBytes(const BytesT& _bytes, const Endianness _endianness = Endianness::BIG) {
+  std::vector<CharT> BufferFromBytes(const BytesT& _bytes, const Endianness _endianness = Endianness::BIG) {
     const size_t bytesTSize = sizeof(BytesT) * 8;
     const size_t charTSize = sizeof(CharT) * 8;
     std::vector<CharT> output;

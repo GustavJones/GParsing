@@ -7,7 +7,7 @@
 
 namespace GParsing {
 	template <typename CharT> 
-	GPARSING_API class JSONNumber : public JSONElement<CharT>
+	class JSONNumber : public JSONElement<CharT>
 	{
 	public:
 		JSONNumber() : m_number(0) {}

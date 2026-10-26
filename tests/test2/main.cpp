@@ -1,7 +1,5 @@
 #include "GParsing/GParsing.hpp"
-#include "GParsing/HTTP/HTTPResponse.hpp"
-#include <iostream>
-#include <vector>
+#include <string>
 
 int main(int argc, char *argv[]) {
   const std::string test_response_string =
@@ -9,15 +7,17 @@ int main(int argc, char *argv[]) {
       "text/html\nContent-Length: 1354\n\n<html>\n<body>\n<h1>Happy New "
       "Millennium!</h1>\n(more file contents)\n  .\n  .\n  .\n</body>\n</html>";
 
-  std::vector<unsigned char> test_response = GParsing::ConvertToCharArray(
-      test_response_string.c_str(), test_response_string.length());
+	GParsing::HTTPString<unsigned char> test_response = test_response_string;
+	GParsing::HTTPString<unsigned char> output;
 
   std::cout << "TEST2" << std::endl << std::endl;
+	std::cout << "Input: \n" << test_response << std::endl;
+	
+	GParsing::HTTPResponse<unsigned char> resp;
+	resp.Parse(test_response);
+	resp.Serialize(output);
 
-  GParsing::HTTPResponse resp;
-  resp.ParseResponse(test_response);
-
-  std::cout << resp << std::endl;
+	std::cout << "Output: \n" << output << std::endl;
 
   return 0;
 }

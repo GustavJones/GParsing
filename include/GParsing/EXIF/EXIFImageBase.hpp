@@ -1,11 +1,10 @@
 #pragma once
-#include "GParsing/Core/API.hpp"
 #include "GParsing/EXIF/EXIFTag.hpp"
 #include <vector>
 
 namespace GParsing {
 	template<typename ByteT>
-	class GPARSING_API EXIFImageBase
+	class EXIFImageBase
 	{
 	public:
 		std::vector<GParsing::EXIFTag<ByteT>> tags;

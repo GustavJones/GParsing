@@ -1,5 +1,4 @@
 #pragma once
-#include "GParsing/Core/API.hpp"
 #include "GParsing/HTML/HTMLToken.hpp"
 #include "GParsing/HTML/HTMLElement.hpp"
 #include "GParsing/HTML/HTMLDoctype.hpp"
@@ -15,7 +14,7 @@ const std::vector<std::string> HTML_VOID_ELEMENTS = { "area", "base", "br", "col
 const std::vector<std::string> HTML_RAW_TEXT_PARSE_ELEMENTS = {"script", "style", "title", "textarea"};
 
 template <typename CharT>
-GPARSING_API class HTMLDocument {
+class HTMLDocument {
 private:
   HTMLDoctype m_doctypeToken;
   HTMLElement<CharT> * m_rootElement;

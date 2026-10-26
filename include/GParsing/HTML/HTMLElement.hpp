@@ -1,5 +1,4 @@
 #pragma once
-#include "GParsing/Core/API.hpp"
 #include "GParsing/Core/Compare.hpp"
 #include "GParsing/HTML/HTMLArgument.hpp"
 #include <vector>
@@ -7,7 +6,7 @@
 
 namespace GParsing {
 template <typename CharT>
-GPARSING_API class HTMLElement
+class HTMLElement
 {
 private:
   bool m_autoClosing;

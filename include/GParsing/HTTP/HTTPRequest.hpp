@@ -1,37 +1,235 @@
 #pragma once
-#include "GParsing/Core/API.hpp"
+#include "GParsing/HTTP/HTTPBaseStructure.hpp"
+#include "GParsing/HTTP/HTTPHeader.hpp"
 #include "GParsing/HTTP/HTTPMethod.hpp"
-#include <string>
-#include <vector>
+#include "GParsing/HTTP/HTTPVersion.hpp"
+#include "GParsing/HTTP/HTTPWhitespace.hpp"
+#include <stdexcept>
+#include <cstddef>
 
 namespace GParsing {
-class GPARSING_API HTTPRequest {
-public:
-  HTTPMethod method = GParsing::HTTPMethod::GPARSING_UNKNOWN;
-  std::string uri;
-  std::string version;
-  std::vector<std::pair<std::string, std::vector<std::string>>> headers;
-  std::vector<unsigned char> message;
+	template<typename CharT>
+	class HTTPRequest : public HTTPBaseStructure<CharT> {
+	private:
+		using typename HTTPBaseStructure<CharT>::State;
 
-  HTTPRequest();
-  HTTPRequest(HTTPRequest &&) = default;
-  HTTPRequest(const HTTPRequest &) = default;
-  HTTPRequest &operator=(HTTPRequest &&) = default;
-  HTTPRequest &operator=(const HTTPRequest &) = default;
-  ~HTTPRequest();
+		HTTPMethod m_method = HTTPMethod::Unknown;
+		HTTPString<CharT> m_uri;
 
-  void ParseRequest(const std::vector<unsigned char> &_request);
+	[[nodiscard]]
+	static HTTPMethod ParseMethod(State &_state, size_t &_index, const HTTPString<CharT> &_buffer) {
+		HTTPString<CharT> method;
 
-  std::vector<unsigned char> CreateRequest() const;
+		HTTPBaseStructure<CharT>::SkipWhitespace(_index, _buffer);
 
-private:
-  void _ParseHeaders(const std::string &_headersStr);
+		while (_index < _buffer.Length()) {
+			if (!HTTPIsWhitespace(_index, _buffer) && !HTTPIsNewline(_index, _buffer)) {
+				method.Append(_buffer[_index]);
+			}
+			else {
+				HTTPBaseStructure<CharT>::SkipWhitespace(_index, _buffer);
 
-  std::pair<std::string, std::vector<std::string>> _ParseHeaderLine(const std::string &_headerLine);
+				if (HTTPIsNewline(_index, _buffer)) {
+					_state = State::Error;
+					return HTTPMethod::Unknown;
+				}
 
-  std::vector<unsigned char> & ConvertToCRLF(std::vector<unsigned char> &_request, const int &_start = 0, const int &_end = -1);
-};
-} // namespace GParsing
+				_state = State::URI;
+				return HTTPGetMethod(method);
+			}
 
-GPARSING_API std::ostream &operator<<(std::ostream &os,
-                                      const GParsing::HTTPRequest &obj);
+			_index++;
+		}
+
+		_state = State::Error;
+		return HTTPMethod::Unknown;
+	}
+
+	[[nodiscard]]
+	static HTTPString<CharT> ParseURI(State &_state, size_t &_index, const HTTPString<CharT> &_buffer) {
+		HTTPString<CharT> uri;
+
+		HTTPBaseStructure<CharT>::SkipWhitespace(_index, _buffer);
+
+		while (_index < _buffer.Length()) {
+			if (!HTTPIsWhitespace(_index, _buffer) && !HTTPIsNewline(_index, _buffer)) {
+				uri.Append(_buffer[_index]);
+			}
+			else {
+				HTTPBaseStructure<CharT>::SkipWhitespace(_index, _buffer);
+
+				if (HTTPIsNewline(_index, _buffer)) {
+					_state = State::Error;
+					return {};
+				}
+
+				_state = State::Version;
+				return uri;
+			}
+
+			_index++;
+		}
+
+		_state = State::Error;
+		return {};
+	}
+
+	[[nodiscard]]
+	HTTPVersion ParseVersion(State &_state, size_t &_index, const HTTPString<CharT> &_buffer) override {
+		HTTPString<CharT> version;
+
+		this->SkipWhitespace(_index, _buffer);
+
+		while (_index < _buffer.Length()) {
+			if (!HTTPIsWhitespace(_index, _buffer) && !HTTPIsNewline(_index, _buffer)) {
+				version.Append(_buffer[_index]);
+			}
+			else {
+				this->SkipWhitespace(_index, _buffer);
+
+				if (!HTTPIsNewline(_index, _buffer)) { 
+					_state = State::Error; 
+					return HTTPVersion::Unknown;
+				}
+				else _index += HTTPGetNewlineSize(_index, _buffer);
+
+				_state = State::HeaderTag;
+				return HTTPGetVersion(version);
+			}
+
+			_index++;
+		}
+
+		_state = State::Error;
+		return HTTPVersion::Unknown;
+	}
+
+	void SerializeMethod(State &_state, HTTPString<CharT> &_buffer) const {
+		_buffer.Append(HTTPGetMethodString<CharT>(m_method));
+		_buffer.Append(HTTPGetWhitespaceString<CharT>());
+
+		_state = State::URI;
+	}
+
+	void SerializeURI(State &_state, HTTPString<CharT> &_buffer) const {
+		_buffer.Append(m_uri);
+		_buffer.Append(HTTPGetWhitespaceString<CharT>());
+
+		_state = State::Version;
+	}
+
+	void SerializeVersion(State &_state, HTTPString<CharT> &_buffer) const override {
+		_buffer.Append(HTTPGetVersionString<CharT>(this->m_version));
+		_buffer.Append(HTTPGetNewlineString<CharT>());
+
+		_state = State::HeaderTag;
+	}
+
+	public:
+		HTTPRequest() = default;
+		~HTTPRequest() = default;
+
+		void Parse(const HTTPString<CharT> &_buffer) override {
+			HTTPHeader<CharT> header;
+			State state = State::Method;
+			size_t index = 0;
+
+			Clear();
+
+			while (state != State::Idle) {
+				switch (state) {
+					case State::Method:
+					{
+						m_method = ParseMethod(state, index, _buffer);
+						break;
+					}
+					case State::URI:
+					{
+						m_uri = ParseURI(state, index, _buffer);
+						break;
+					}
+					case State::Version:
+					{
+						this->m_version = this->ParseVersion(state, index, _buffer);
+						break;
+					}
+					case State::HeaderTag:
+					{
+						header.SetTag(this->ParseHeaderTag(state, index, _buffer));
+						break;
+					}
+					case State::HeaderValue:
+					{
+						header.SetValue(this->ParseHeaderValue(state, index, _buffer));
+						this->m_headers.Add(header);
+						break;
+					}
+					case State::Message:
+					{
+						this->m_message = this->ParseMessage(state, index, _buffer, this->UseChunkedTransferEncoding());
+						break;
+					}
+					case State::Idle:
+					{
+						break;
+					}
+					default:
+					{
+						throw std::runtime_error("Error in parsing.");
+						break;
+					}
+				};
+			}
+		}
+
+		void Serialize(HTTPString<CharT> &_buffer) const override {
+			State state = State::Method;
+
+			while (state != State::Idle) {
+				switch (state) {
+				case State::Method:
+				{
+					SerializeMethod(state, _buffer);
+					break;
+				}
+				case State::URI:
+				{
+					SerializeURI(state, _buffer);
+					break;
+				}
+				case State::Version:
+				{
+					this->SerializeVersion(state, _buffer);
+					break;
+				}
+				case State::HeaderTag:
+				{
+					this->SerializeHeaders(state, _buffer);
+					break;
+				}
+				case State::Message:
+				{
+					this->SerializeMessage(state, _buffer, this->UseChunkedTransferEncoding());
+				}
+				case State::Idle:
+				{
+					break;
+				}
+				default:
+				{
+					throw std::runtime_error("Error in serialization.");
+					break;
+				}
+				};
+			}
+		}
+
+		void Clear() override {
+			this->m_method = {};
+			this->m_uri = {};
+			this->m_version = HTTPVersion::Unknown;
+			this->m_headers.Clear();
+			this->m_message = {};
+		}
+	};
+}

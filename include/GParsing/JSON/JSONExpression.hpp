@@ -1,5 +1,4 @@
 #pragma once
-#include "GParsing/Core/API.hpp"
 #include "GParsing/Core/Buffers.hpp"
 #include "GParsing/Core/Compare.hpp"
 #include "GParsing/JSON/JSONWhitespace.hpp"
@@ -18,7 +17,7 @@ namespace GParsing {
 	static const std::vector<std::pair<std::string, JSONExpressionType>> JSONExpressionDefinitions = { {"true", JSONExpressionType::True}, {"false", JSONExpressionType::False}, {"null", JSONExpressionType::Null} };
 
 	template <typename CharT>
-	GPARSING_API class JSONExpression : public JSONElement<CharT>
+	class JSONExpression : public JSONElement<CharT>
 	{
 	public:
 		JSONExpression(const JSONExpressionType _type) : m_type(_type) {}

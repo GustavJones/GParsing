@@ -7,17 +7,17 @@
 #include "GParsing/EXIF/GParsing-EXIF.hpp"
 
 namespace GParsing {
-inline GPARSING_API std::vector<unsigned char> ConvertToCharArray(const char *_c, const int &_len) {
-  std::vector<unsigned char> output;
-  output.reserve(_len);
-
-  for (int i = 0; i < _len; i++) {
-    output.push_back(_c[i]);
-  }
-  return output;
-}
-
-inline GPARSING_API const unsigned char *const ConvertToCharPointer(const std::vector<unsigned char> &_c) {
-  return _c.data();
-}
+// inline std::vector<unsigned char> ConvertToCharArray(const char *_c, const int &_len) {
+//   std::vector<unsigned char> output;
+//   output.reserve(_len);
+//
+//   for (int i = 0; i < _len; i++) {
+//     output.push_back(_c[i]);
+//   }
+//   return output;
+// }
+//
+// inline const unsigned char *const ConvertToCharPointer(const std::vector<unsigned char> &_c) {
+//   return _c.data();
+// }
 } // namespace GParsing

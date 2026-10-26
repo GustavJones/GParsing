@@ -1,5 +1,4 @@
 #pragma once
-#include "GParsing/Core/API.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <stdexcept>
@@ -7,11 +6,11 @@
 
 namespace GParsing {
 
-GPARSING_API enum class HTMLTokenFlags {
+enum class HTMLTokenFlags {
   StartTagAutoClosing,
 };
 
-GPARSING_API enum class HTMLTokenType {
+enum class HTMLTokenType {
   UNKNOWN,
   DOCTYPE,
   StartTag,
@@ -23,7 +22,7 @@ GPARSING_API enum class HTMLTokenType {
 };
 
 template <typename CharT> 
-GPARSING_API class HTMLToken {
+class HTMLToken {
 private:
   std::vector<HTMLTokenFlags> m_flags;
   HTMLTokenType m_type;

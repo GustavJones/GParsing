@@ -8,9 +8,7 @@ target_include_directories(GParsing INTERFACE
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
-option(GPARSING_BUILD_TESTS OFF)
-option(GPARSING_HTTP "Link HTTP library" ON)
+option(GPARSING_BUILD_TESTS "Build GParsing test executables" OFF)
 
 include(GNUInstallDirs)
 set(CMAKE_INSTALL_RPATH "$ORIGIN/${CMAKE_INSTALL_LIBDIR} ${CMAKE_INSTALL_FULL_LIBDIR}")
@@ -26,8 +24,6 @@ foreach(SUBMODULE ${SUBMODULES})
     endif()
   endif()
 endforeach()
-
-add_subdirectory(src)
 
 if(GPARSING_BUILD_TESTS)
   add_subdirectory(tests)

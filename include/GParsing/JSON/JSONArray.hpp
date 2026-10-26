@@ -1,5 +1,4 @@
 #pragma once
-#include "GParsing/Core/API.hpp"
 #include "GParsing/Core/Buffers.hpp"
 #include "GParsing/JSON/JSONWhitespace.hpp"
 #include "GParsing/JSON/JSONValue.hpp"
@@ -7,7 +6,7 @@
 
 namespace GParsing {
   template <typename CharT>
-	GPARSING_API class JSONArray : public JSONElement<CharT>
+	class JSONArray : public JSONElement<CharT>
 	{
 	public:
 		JSONArray() = default;
